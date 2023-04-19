@@ -1,0 +1,109 @@
+{
+    "Playthroughs":  [
+                         {
+                             "Lookup":  "darksouls3",
+                             "Game":  "Dark Souls III",
+                             "Deaths":  "621",
+                             "Sessions": "17",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "hollowknight",
+                             "Game":  "Hollow Knight",
+                             "Deaths":  "755",
+                             "Sessions": "20",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "darksouls2",
+                             "Game":  "Dark Souls II",
+                             "Deaths":  "688",
+                             "Sessions": "18",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "bloodbornepsx",
+                             "Game":  "Bloodborne PSX",
+                             "Deaths":  "61",
+                             "Sessions": "3",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "bloodborne",
+                             "Game":  "Bloodborne",
+                             "Deaths":  "187",
+                             "Sessions": "8",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "eldenring",
+                             "Game":  "Elden Ring",
+                             "Deaths":  "651",
+                             "Sessions": "22",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "deathsdoor",
+                             "Game":  "Death\u0027s Door",
+                             "Deaths":  "76",
+                             "Sessions": "4",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "sekiro",
+                             "Game":  "Sekiro: Shadows Die Twice",
+                             "Deaths":  "116",
+                             "Sessions": "7",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "saltandsanctuary",
+                             "Game":  "Salt and Sanctuary",
+                             "Deaths":  "152",
+                             "Sessions": "5",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "demonssouls",
+                             "Game":  "Demon\u0027s Souls Remake",
+                             "Deaths":  "157",
+                             "Sessions": "6",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "wolong",
+                             "Game":  "Wo Long: Fallen Dynasty Demo",
+                             "Deaths":  "32",
+                             "Sessions": "1",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "diablo2",
+                             "Game":  "Diablo 2: Resurrected",
+                             "Deaths":  "6",
+                             "Sessions": "16",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "mortalshell",
+                             "Game":  "Mortal Shell",
+                             "Deaths":  "150",
+                             "Sessions": "6",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "thymesia",
+                             "Game":  "Thymesia",
+                             "Deaths":  "76",
+                             "Sessions": "5",
+                             "Status": "Complete"
+                         },
+                         {
+                             "Lookup":  "resi4remake",
+                             "Game":  "Resident Evil 4 Remake",
+                             "Deaths":  "18",
+                             "Sessions": "6",
+                             "Status": "Ongoing"
+                         }
+                     ]
+}
