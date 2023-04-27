@@ -1,0 +1,88 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "vargtutorial",
+                       "Boss":  "Varg (Tutorial)",
+                       "Status":  "Undefeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "odur",
+                       "Boss":  "Odur",
+                       "Status":  "Defeated",
+                       "Deaths":  19
+                   },
+                   {
+                       "Lookup":  "thehangedqueen",
+                       "Boss":  "The Hanged Queen",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "godoffools",
+                       "Boss":  "God of the Fools",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "mutatedodur",
+                       "Boss":  "Mutated Odur",
+                       "Status":  "Defeated",
+                       "Deaths":  7
+                   },
+                   {
+                       "Lookup":  "Varg",
+                       "Boss":  "Varg",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "Urd",
+                       "Boss":  "Urd",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "soundoftheabyss",
+                       "Boss":  "Sound of the Abyss",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "corvus1",
+                       "Boss":  "Corvus (1st Kill - Chaotic Power Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "corvus2",
+                       "Boss":  "Corvus (2nd Kill - Power of the Vile Blood Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "corvus3",
+                       "Boss":  "Corvus (3rd Kill - Blessing of the Pure Blood Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "corvus4",
+                       "Boss":  "Corvus (4th Kill - Power of Cleansing Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "corvus5",
+                       "Boss":  "Corvus (5th Kill - Power of Cleansing Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "corvus6",
+                       "Boss":  "Corvus (6th Kill - Harmonised Forces Ending)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   }
+               ]
+}

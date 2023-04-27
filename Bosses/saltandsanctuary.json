@@ -1,0 +1,136 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "thesoddenknight",
+                       "Boss":  "The Sodden Knight",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "themadalchemist",
+                       "Boss":  "The Mad Alchemist",
+                       "Status":  "Defeated",
+                       "Deaths":  9
+                   },
+                   {
+                       "Lookup":  "thekraekencyclops",
+                       "Boss":  "The Kraeken Cyclops",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "thefalsejester",
+                       "Boss":  "The False Jester",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "thequeenofsmiles",
+                       "Boss":  "The Queen of Smiles",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "kraekenwyrm",
+                       "Boss":  "Kraeken Wyrm",
+                       "Status":  "Defeated",
+                       "Deaths":  9
+                   },
+                   {
+                       "Lookup":  "treeofmen",
+                       "Boss":  "Tree of Men",
+                       "Status":  "Defeated",
+                       "Deaths":  11
+                   },
+                   {
+                       "Lookup":  "disemboweledhusk",
+                       "Boss":  "Disemboweled Husk",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "thatstenchmostfoul",
+                       "Boss":  "That Stench Most Foul",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "theuntouchedinquisitor",
+                       "Boss":  "The Untouched Inquisitor",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "thethirdlamb",
+                       "Boss":  "The Third Lamb",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "ronincran",
+                       "Boss":  "Ronin Cran",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "thedriedking",
+                       "Boss":  "The Dried King",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "murdiellamal",
+                       "Boss":  "Murdiella Mal",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "thecoveted",
+                       "Boss":  "The Coveted",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "carsejawthecruel",
+                       "Boss":  "Carsejaw The Cruel",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "thebloodlessprince",
+                       "Boss":  "The Bloodless Prince",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "thewitchofthelake",
+                       "Boss":  "The Witch of the Lake",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "theunskinned",
+                       "Boss":  "The Unskinned",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "jeff",
+                       "Boss":  "Kraekan Dragon Skourzh (Jeff)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "skeletoncousins",
+                       "Boss":  "The Forgotten King (Skeleton Cousins)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "thenamelessgod",
+                       "Boss":  "The Nameless God",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   }
+               ]
+}

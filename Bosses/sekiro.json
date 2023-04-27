@@ -1,0 +1,298 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "leadershigenoriyamauchi",
+                       "Boss":  "Leader Shigenori Yamauchi",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "lordgenichirotutorial",
+                       "Boss":  "Lord Genichiro (Tutorial)",
+                       "Status":  "Undefeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "generalnaomorikawarada",
+                       "Boss":  "General Naomori Kawarada",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "chainedogreashinaoutskirts",
+                       "Boss":  "Chained Ogre (Ashina Outskirts)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "generaltenzenyamauchi",
+                       "Boss":  "General Tenzen Yamauchi",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "shinobihunterenshinofmisen",
+                       "Boss":  "Shinobi Hunter Enshin of Misen",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "juzouthedrunkard",
+                       "Boss":  "Juzou the Drunkard",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "ladybutterfly",
+                       "Boss":  "Lady Butterfly",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "gyoubuoniwa",
+                       "Boss":  "Gyoubu Oniwa",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "blazingbull",
+                       "Boss":  "Blazing Bull",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "sevenashinaspearsshikibutoshikatsuyamauchi",
+                       "Boss":  "Seven Ashina Spears - Shikibu Toshikatsu Yamauchi",
+                       "Status":  "Defeated",
+                       "Deaths":  10
+                   },
+                   {
+                       "Lookup":  "loneshadowswordsman",
+                       "Boss":  "Lone Shadow Swordsman",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "generalkuranosukematsumoto",
+                       "Boss":  "General Kuranosuke Matsumoto",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "genichiroashina",
+                       "Boss":  "Genichiro Ashina",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "ashinaelitejinsukesaze",
+                       "Boss":  "Ashina Elite - Jinsuke Saze",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "snakeeyesshirafuji",
+                       "Boss":  "Snake Eyes Shirafuji",
+                       "Status":  "Defeated",
+                       "Deaths":  8
+                   },
+                   {
+                       "Lookup":  "longarmcentipedegiraffe",
+                       "Boss":  "Long-arm Centipede Giraffe",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "guardianape",
+                       "Boss":  "Guardian Ape",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "armoredwarrior",
+                       "Boss":  "Armored Warrior",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "longarmcentipedesenun",
+                       "Boss":  "Long Arm Centipede Sen-Un",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "foldingscreenmonkeys",
+                       "Boss":  "Folding Screen Monkeys",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "snakeeyesshirahagi",
+                       "Boss":  "Snake Eyes Shirahagi",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "headlessape",
+                       "Boss":  "Headless Ape",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "tokujirotheglutton",
+                       "Boss":  "Tokujiro the Glutton",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "mistnoble",
+                       "Boss":  "Mist Noble",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "orinofthewater",
+                       "Boss":  "O\u0027Rin of the Water",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "corruptedmonk",
+                       "Boss":  "Corrupted Monk",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "headlessgokan",
+                       "Boss":  "Headless (Gokan)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "chainedogreashinacastle",
+                       "Boss":  "Chained Ogre (Ashina Castle)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "headlessungo",
+                       "Boss":  "Headless (Ungo)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "loneshadowmasanagathespearbearerashinacastle",
+                       "Boss":  "Lone Shadow Masanaga the Spear-bearer (Ashina Castle)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "loneshadowvilehand",
+                       "Boss":  "Lone Shadow Vilehand",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "greatshinobiowl",
+                       "Boss":  "Great Shinobi Owl",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "loneshadowmasanagathespearbearerowlsmemory",
+                       "Boss":  "Lone Shadow Masanaga the Spear-bearer (Owl\u0027s Memory)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "juzouthedrunkardowlsmemory",
+                       "Boss":  "Juzou the Drunkard (Owl\u0027s Memory)",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "owlfather",
+                       "Boss":  "Owl (Father)",
+                       "Status":  "Defeated",
+                       "Deaths":  13
+                   },
+                   {
+                       "Lookup":  "truemonk",
+                       "Boss":  "True Monk",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "sakurabullofthepalace",
+                       "Boss":  "Sakura Bull of the Palace",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "okamileadershizu",
+                       "Boss":  "Okami Leader Shizu",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "headlessyashariku",
+                       "Boss":  "Headless (Yashariku)",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "divinedragon",
+                       "Boss":  "Divine Dragon",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "shichimenwarriorfountainheadpalace",
+                       "Boss":  "Shichimen Warrior (Fountainhead Palace)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "ashinaeliteujinarimizuo",
+                       "Boss":  "Ashina Elite - Ujinari Mizuo",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "shigekichioftheredguard",
+                       "Boss":  "Shigekichi of the Red Guard",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "headlessako",
+                       "Boss":  "Headless (Ako)",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "demonofhatred",
+                       "Boss":  "Demon of Hatred",
+                       "Status":  "Defeated",
+                       "Deaths":  22
+                   },
+                   {
+                       "Lookup":  "sevenashinaspearsshumemasajioniwa",
+                       "Boss":  "Seven Ashina Spears - Shume Masaji Oniwa",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "shichimenwarriorashinadepths",
+                       "Boss":  "Shichimen Warrior (Ashina Depths)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "isshintheswordsaint",
+                       "Boss":  "Isshin, The Sword Saint",
+                       "Status":  "Defeated",
+                       "Deaths":  9
+                   }
+               ]
+}

@@ -1,0 +1,76 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "vennoctivagu",
+                       "Boss":  "Ven Noctivagu",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "grisha",
+                       "Boss":  "Grisha",
+                       "Status":  "Defeated",
+                       "Deaths":  21
+                   },
+                   {
+                       "Lookup":  "hadernsmolderingmace",
+                       "Boss":  "Hadern (Smoldering Mace)",
+                       "Status":  "Defeated",
+                       "Deaths":  16
+                   },
+                   {
+                       "Lookup":  "imrodtheunrepentant",
+                       "Boss":  "Imrod the Unrepentant",
+                       "Status":  "Defeated",
+                       "Deaths":  8
+                   },
+                   {
+                       "Lookup":  "hadernchisel",
+                       "Boss":  "Hadern (Chisel)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "crucixthetwiceborn",
+                       "Boss":  "Crucix the Twiceborn",
+                       "Status":  "Defeated",
+                       "Deaths":  26
+                   },
+                   {
+                       "Lookup":  "hadernmartyrsblade",
+                       "Boss":  "Hadern (Martyr\u0027s Blade)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "enalsvedgrisha",
+                       "Boss":  "Enalsved Grisha",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "tarsusthefirstmartyr",
+                       "Boss":  "Tarsus, the First Martyr",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "grishamist",
+                       "Boss":  "Grisha (Mist)",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "hadernthedeliverer",
+                       "Boss":  "Hadern, the Deliverer",
+                       "Status":  "Defeated",
+                       "Deaths":  8
+                   },
+                   {
+                       "Lookup":  "theunchained",
+                       "Boss":  "The Unchained",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   }
+               ]
+}

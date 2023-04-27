@@ -23,7 +23,7 @@
                              "Game":  "Dark Souls II",
                              "Deaths":  "688",
                              "Sessions":  "18",
-                             "Status":  "Complete",
+                             "Status":  "In-Progress",
                              "VOD":  "https://www.youtube.com/watch?v=oiU0v6B2rtw\u0026list=PLPZ4ZTUtxPZL72c9p8fRE1BJEeglgrCSx",
                              "Playtime":  "55h 54m"
                          },
@@ -135,7 +135,7 @@
                              "Game":  "Tails of Iron",
                              "Deaths":  "0",
                              "Sessions":  "0",
-                             "Status":  "Scheduled"
+                             "Status":  "Current"
                          }
                      ]
 }

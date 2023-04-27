@@ -1,0 +1,250 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "lastgiant",
+                       "Boss":  "Last Giant",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "pursuer",
+                       "Boss":  "Pursuer",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "dragonrider",
+                       "Boss":  "Dragonrider",
+                       "Status":  "Defeated",
+                       "Deaths":  4
+                   },
+                   {
+                       "Lookup":  "olddragonslayer",
+                       "Boss":  "Old Dragonslayer",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "flexilesentry",
+                       "Boss":  "Flexile Sentry",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "ruinsentinels",
+                       "Boss":  "Ruin Sentinels",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "lostsinner",
+                       "Boss":  "Lost Sinner",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "belfrygargoyles",
+                       "Boss":  "Belfry Gargoyles",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "skeletonlords",
+                       "Boss":  "Skeleton Lords",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "executionerschariot",
+                       "Boss":  "Executioner\u0027s Chariot",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "covetousdemon",
+                       "Boss":  "Covetous Demon",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "mytha",
+                       "Boss":  "Mytha",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "smelterdemon",
+                       "Boss":  "Smelter Demon",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "oldironking",
+                       "Boss":  "Old Iron King",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "royalratvanguard",
+                       "Boss":  "Royal Rat Vanguard",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "therotten",
+                       "Boss":  "The Rotten",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "scorpionessnajka",
+                       "Boss":  "Scorpioness Najka",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "royalratauthority",
+                       "Boss":  "Royal Rat Authority",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "maguscongregation",
+                       "Boss":  "Magus Congregation",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "dukesdearfreja",
+                       "Boss":  "Duke\u0027s Dear Freja",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "twindragonriders",
+                       "Boss":  "Twin Dragonriders",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "lookingglassknight",
+                       "Boss":  "Looking Glass Knight",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "demonofsong",
+                       "Boss":  "Demon of Song",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "velstadttheroyalaegis",
+                       "Boss":  "Velstadt, the Royal Aegis",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "guardiandragon",
+                       "Boss":  "Guardian Dragon",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "giantlord",
+                       "Boss":  "Giant Lord",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "ancientdragon",
+                       "Boss":  "Ancient Dragon",
+                       "Status":  "Defeated",
+                       "Deaths":  8
+                   },
+                   {
+                       "Lookup":  "darklurker",
+                       "Boss":  "Darklurker",
+                       "Status":  "Defeated",
+                       "Deaths":  14
+                   },
+                   {
+                       "Lookup":  "vendrick",
+                       "Boss":  "Vendrick",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "smeterdemonblue",
+                       "Boss":  "Smeter Demon Blue",
+                       "Status":  "Defeated",
+                       "Deaths":  31
+                   },
+                   {
+                       "Lookup":  "fumeknight",
+                       "Boss":  "Fume Knight",
+                       "Status":  "Defeated",
+                       "Deaths":  72
+                   },
+                   {
+                       "Lookup":  "siralonne",
+                       "Boss":  "Sir Alonne",
+                       "Status":  "Defeated",
+                       "Deaths":  17
+                   },
+                   {
+                       "Lookup":  "elanasqualidqueen",
+                       "Boss":  "Elana, Squalid Queen",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "graverobbers",
+                       "Boss":  "Graverobbers",
+                       "Status":  "Defeated",
+                       "Deaths":  9
+                   },
+                   {
+                       "Lookup":  "sinhtheslumberingdragon",
+                       "Boss":  "Sinh, the Slumbering Dragon",
+                       "Status":  "Defeated",
+                       "Deaths":  5
+                   },
+                   {
+                       "Lookup":  "aavathekingspet",
+                       "Boss":  "Aava, the King\u0027s Pet",
+                       "Status":  "Defeated",
+                       "Deaths":  3
+                   },
+                   {
+                       "Lookup":  "ludandzallen",
+                       "Boss":  "Lud and Zallen",
+                       "Status":  "Defeated",
+                       "Deaths":  2
+                   },
+                   {
+                       "Lookup":  "burntivoryking",
+                       "Boss":  "Burnt Ivory King",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   },
+                   {
+                       "Lookup":  "thronewatcheranddefender",
+                       "Boss":  "Throne Watcher and Defender",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "nashandra",
+                       "Boss":  "Nashandra",
+                       "Status":  "Defeated",
+                       "Deaths":  0
+                   },
+                   {
+                       "Lookup":  "aldiascholarofthefirstsin",
+                       "Boss":  "Aldia, Scholar of the First Sin",
+                       "Status":  "Defeated",
+                       "Deaths":  1
+                   }
+               ]
+}
