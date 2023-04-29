@@ -9,18 +9,63 @@ function Get-GameStats
 
     if($stat)
     {
+        # Get the boss data
+        $bossPath = "$([environment]::getfolderpath("mydocuments"))\Streaming\Deathcount\Bosses\$($stat.Lookup).json"
+        $bosses = Get-Content $bossPath | ConvertFrom-Json
+        $currentBoss = $bosses.Bosses | Where-Object {$_.Status -eq "Current"} | Select-Object -First 1
+        # Count up some boss stats
+        $bossCount = 0
+        $bossDefeatedCount = 0
+        $bossDeaths = 0
+        foreach($boss in $bosses.Bosses)
+        {
+            $bossCount++;
+            $bossDeaths += $boss.deaths
+            if($boss.Status -eq "Defeated")
+            {
+                $bossDefeatedCount++;
+            }
+        }
+
+        # Build an output string based on what data is available
+        $output = "Game: $($stat.Game)"
+        if($stat.Status)
+        {
+            $output += " | Status: $($stat.Status)"
+        }
         if($stat.Playtime)
         {
-            Write-Host "Game: $($stat.Game) | Status: $($stat.Status) | Playtime: $($stat.Playtime) | Sessions: $($stat.Sessions) | Deaths: $($stat.Deaths) | VODs: $($stat.VOD)"
+            $output += " | Playtime: $($stat.Playtime)"
         }
-        else
+        if($stat.Sessions)
         {
-            Write-Host "Game: $($stat.Game) | Status: $($stat.Status) | Sessions: $($stat.Sessions) | Deaths: $($stat.Deaths) | VODs: $($stat.VOD)"
+            $output += " | Sessions: $($stat.Sessions)"
         }
+        if($stat.Deaths)
+        {
+            $output += " | Deaths: $($stat.Deaths)"
+        }
+        if($bossCount -gt 0)
+        {
+            $output += " | Bosses Fought: $($bossCount)"
+            $output += " | Bosses Defeated: $($bossDefeatedCount)"
+            $output += " | Boss Deaths: $($bossDeaths)"
+        }
+        if($currentBoss)
+        {
+            $output += " | Current Boss: $($currentBoss.Boss)"
+            $output += " | Current Boss Deaths: $($currentBoss.Deaths)"
+        }
+        if($stat.VOD)
+        {
+            $output += " | VODs: $($stat.VOD)"
+        }
+
+        Write-Host $output
     }
     else
     {
-    Write-Host "Playthrough not found. Use '!stats list' to get the list of playthroughs or '!stats args' for all possible arguments"
+        Write-Host "Playthrough not found. Use '!stats list' to get the list of playthroughs or '!stats args' for all possible arguments"
     }
 }
 

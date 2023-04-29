@@ -23,7 +23,7 @@
                              "Game":  "Dark Souls II",
                              "Deaths":  "688",
                              "Sessions":  "18",
-                             "Status":  "In-Progress",
+                             "Status":  "Complete",
                              "VOD":  "https://www.youtube.com/watch?v=oiU0v6B2rtw\u0026list=PLPZ4ZTUtxPZL72c9p8fRE1BJEeglgrCSx",
                              "Playtime":  "55h 54m"
                          },
@@ -89,8 +89,8 @@
                              "Playtime":  "16h 55m"
                          },
                          {
-                             "Lookup":  "wolong",
-                             "Game":  "Wo Long: Fallen Dynasty Demo",
+                             "Lookup":  "wolongdemo",
+                             "Game":  "Wo Long: Fallen Dynasty (Demo)",
                              "Deaths":  "32",
                              "Sessions":  "1",
                              "Status":  "Complete",

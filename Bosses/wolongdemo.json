@@ -1,0 +1,10 @@
+{
+    "Bosses":  [
+                   {
+                       "Lookup":  "zhangliang",
+                       "Boss":  "Zhang Liang, General of Man",
+                       "Status":  "Defeated",
+                       "Deaths":  19
+                   }
+               ]
+}
