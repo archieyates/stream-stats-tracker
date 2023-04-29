@@ -103,6 +103,23 @@ if($args)
         $newCurrentGame.Status = "Current"
         Write-Host "Set $($newCurrentGame.Lookup) to Current"
 
+        # Update the Current Death text file
+        Set-Content $currentDeathsPath $newCurrentGame.Deaths   
+        Write-Host "Current Game Deaths set to $([int]$newCurrentGame.Deaths)"
+
+        # Get the JSON data for our new current boss
+        $bossPath = "$([environment]::getfolderpath("mydocuments"))\Streaming\Deathcount\Bosses\$($newCurrentGame.Lookup).json"
+        $bosses = Get-Content $bossPath | ConvertFrom-Json
+        $currentBoss = $bosses.Bosses | Where-Object {$_.Status -eq "Current"} | Select-Object -First 1
+
+        # Update the Current Boss Death Count text file
+        if($currentBoss)
+        {
+            # Optionally update the boss
+            $currentBoss.Deaths = "$([int]$currentBoss.Deaths - 1)"
+            Set-Content $bossDeathsPath "$([int]$currentBoss.Deaths)"
+            Write-Host "Current Boss Deaths set to $([int]$currentBoss.Deaths)"
+        }
     }
     elseif($args[0] -eq "setcomplete")
     {        
