@@ -56,10 +56,10 @@ function Get-GameStats
             $output += " | Current Boss: $($currentBoss.Boss)"
             $output += " | Current Boss Deaths: $($currentBoss.Deaths)"
         }
-        if($stat.VOD)
-        {
-            $output += " | VODs: $($stat.VOD)"
-        }
+        # if($stat.VOD)
+        # {
+        #     $output += " | VODs: $($stat.VOD)"
+        # }
 
         Write-Host $output
     }
