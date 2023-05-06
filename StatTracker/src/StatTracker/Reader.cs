@@ -215,30 +215,8 @@ namespace StatTracker
             Console.Write("Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
-            int newCurrent = -1;
-            int index = 0;
-
-            // Search for the playthrough based on the lookup
-            foreach (Playthrough playthrough in Manager.Playthroughs)
-            {
-                if (playthrough.Lookup == lookup)
-                {
-                    newCurrent = index;
-                    break;
-                }
-                ++index;
-            }
-
-            // Bail if we can't find it
-            if (newCurrent == -1)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("{0} does not exist", lookup);
-                return;
-            }
-
             // Manager handles the actual data
-            Manager.SetCurrentPlaythrough(newCurrent);
+            Manager.SetCurrentPlaythrough(lookup);
         }
         private void CompleteGame()
         {
@@ -298,30 +276,8 @@ namespace StatTracker
             Console.Write("Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
-            int newCurrent = -1;
-            int index = 0;
-
-            // Search for the boss based on the lookup
-            foreach (Boss boss in Manager.Bosses)
-            {
-                if (boss.Lookup == lookup)
-                {
-                    newCurrent = index;
-                    break;
-                }
-                ++index;
-            }
-
-            // Bail if we can't find it
-            if (newCurrent == -1)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("{0} does not exist", lookup);
-                return;
-            }
-
             // Manager handles the actual data
-            Manager.SetCurrentBoss(newCurrent);
+            Manager.SetCurrentBoss(lookup);
         }
         private void DefeatBoss()
         {

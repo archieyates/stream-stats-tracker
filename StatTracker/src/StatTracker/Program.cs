@@ -7,6 +7,8 @@ namespace StatTracker
     {
         static void Main(string[] args)
         {
+            Console.Title = "Stream Stat Tracker";
+
             var appName = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
