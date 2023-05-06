@@ -51,7 +51,7 @@ namespace StatTracker
         private static void VersionCheck()
         {
             // Check the repo to see if a new version is available
-            var webRequest = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/version.txt");
+            var webRequest = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Releases/StatTracker/version.txt");
             var response = WebClient.Send(webRequest);
             using var reader = new StreamReader(response.Content.ReadAsStream());
             String content = reader.ReadToEnd();

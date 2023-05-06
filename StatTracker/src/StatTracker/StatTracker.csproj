@@ -7,7 +7,7 @@
     <Nullable>disable</Nullable>
     <Title>Stream Stat Tracker</Title>
     <PackageId>StreamStatTracker</PackageId>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
   </PropertyGroup>
 
 </Project>
