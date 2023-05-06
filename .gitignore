@@ -2,5 +2,6 @@ StatTracker/src/packages/*
 StatTracker/src/.vs/*
 StatTracker/src/StatTracker/bin/*
 StatTracker/src/StatTracker/obj/*
+Releases/StatTracker/Stats*
 *.user
 *.pdb

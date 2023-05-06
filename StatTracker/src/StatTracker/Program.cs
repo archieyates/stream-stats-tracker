@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
+using System.Xml;
 
 namespace StatTracker
 {
     class Program
     {
-        static readonly HttpClient WebClient = new HttpClient();
-
         static void Main(string[] args)
         {
             var appName = Assembly.GetExecutingAssembly().GetName().Name;
@@ -50,14 +49,30 @@ namespace StatTracker
 
         private static void VersionCheck()
         {
-            // Check the repo to see if a new version is available
-            var webRequest = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Releases/StatTracker/version.txt");
-            var response = WebClient.Send(webRequest);
-            using var reader = new StreamReader(response.Content.ReadAsStream());
-            String content = reader.ReadToEnd();
+            // Grab the project info from the repo
+            String projData = String.Empty;
+            using (HttpClient webClient = new HttpClient())
+            {
+                var webRequest = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/StatTracker/src/StatTracker/StatTracker.csproj");
+                var response = webClient.Send(webRequest);
+                using var webReader = new StreamReader(response.Content.ReadAsStream());
+                projData = webReader.ReadToEnd();
+            }
 
+            // Parse this data to find the version
+            XmlDocument xmlDoc = new XmlDocument();
+            string latestVersionString = String.Empty;
+            using (StringReader xmlReader = new StringReader(projData))
+            {
+                xmlDoc.Load(xmlReader);
+
+                XmlNode node = xmlDoc.DocumentElement.FirstChild;
+                latestVersionString = node.SelectSingleNode("AssemblyVersion").InnerText;
+            }
+
+            // Compare the app with the latest version
             var appVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            var latestVersion = Version.Parse(content);
+            var latestVersion = Version.Parse(latestVersionString);
 
             if(appVersion < latestVersion)
             {
