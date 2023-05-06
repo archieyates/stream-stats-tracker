@@ -1,0 +1,6 @@
+StatTracker/src/packages/*
+StatTracker/src/.vs/*
+StatTracker/src/StatTracker/bin/*
+StatTracker/src/StatTracker/obj/*
+*.user
+*.pdb
