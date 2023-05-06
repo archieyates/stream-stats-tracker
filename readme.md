@@ -17,8 +17,8 @@ When running SST for the first time it will automatically generate several files
 
 These are the files/folders that are used by the program to manage the stats.
 
-### Files
-#### Playthroughs.json
+## Files
+### Playthroughs.json
 Playthoughs.json is where the core data relating to your playthroughs is located.
 Each playthrough stored here can contain any of the following properties.
 - _Lookup_: The lookup name for the playthrough used to identify it (this needs to be unique)
@@ -32,7 +32,7 @@ Each playthrough stored here can contain any of the following properties.
 It is worth noting that currently _VOD_ and _Playtime_ are not automatically supported with the app but will be in the future.
 If you want to add this data you need to just manually edit the json file.
 
-#### Bosses Folder
+### Bosses Folder
 The Bosses folder is where the json files for each Playthrough's bosses are saved.
 When a new Playthrough is created a boss file will be automatically generated using the _Lookup_ of the playthrough as the file name.
 Each boss contains the following properties
@@ -41,7 +41,7 @@ Each boss contains the following properties
 - _Deaths_: How many deaths have happened to this boss
 - _Status_: Is this Boss "Defeated", "Undefeated" or "Current"
 
-### Deaths Folder
+## Deaths Folder
 Within the Deaths folder there are 3 text files: **Boss.txt**, **Game.txt**, and **Total.txt**.
 These text files can be read from by a program like OBS in order to display the death count.
 
@@ -54,7 +54,7 @@ If there isn't a current game then this will just be 0.
 **Total.txt** tracks the total deaths across all playthroughs.
 This is automatically summed anytime the deaths change.
 
-### Layers
+## Layers
 Stream Stat Tracker uses text commands entered into the console in order to update its stats.
 You can consider the app has having several "layers" of commands where one command will take you to the next set of commands.
 The layers can be broken down as follows:
@@ -67,7 +67,7 @@ The layers can be broken down as follows:
 Each of these layers can accept a variety of different commands.
 Using the command _help_ in the Top layer will print out the full list of commands as well as which layers they belong to.
 
-### Top
+## Top
 The Top layer is the first layer in the application.
 After performing an operation the app will return to this layer.
 The full list of commands (some support multiple entries) are:
@@ -78,7 +78,7 @@ The full list of commands (some support multiple entries) are:
 - _[--]_: Decrement the death count shortcut
 - _[help, commands]_: List help
 
-### Game
+## Game
 The Game layer or Playthrough (these words are kind of interchangable but the code uses Playthrough) updates the main data for the playthrough.
 The full list of commands are:
 - _[new]_: Create a new playthrough
@@ -89,7 +89,7 @@ The full list of commands are:
 - _[delete]_: Delete a specified playthrough
 - _[esc]_: Return back to main
 
-### Boss
+## Boss
 The Boss layer updates data for the bosses of the current playthrough.
 If there is no current playthrough then these commands will not run.
 The full list of commands are:
@@ -100,7 +100,7 @@ The full list of commands are:
 - _[delete]_: Delete a specified boss
 - _[esc]_: Return back to main
 
-### Death
+## Death
 The Death layer updates the death counts for the current playthrough and boss.
 If there is no current playthrough then these commands will not run.
 - _[add, ++]_: Increment the death count
