@@ -1,4 +1,7 @@
 # Stream Stat Tracker
+<p align="center">
+<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Example.png" alt="Example"/>
+</p>
 
 Stream Stat Tracker provides a console application for tracking various data during game playthroughs.
 The core functionality revolves around tracking deaths and boss encounters although some additional data such as session counts, and VOD links are supported.
@@ -16,6 +19,9 @@ When running SST for the first time it will automatically generate several files
 	- Total.txt
 
 These are the files/folders that are used by the program to manage the stats.
+<p align="center">
+<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/New.png" alt="New"/>
+</p>
 
 ## Files
 ### Playthroughs.json
@@ -29,6 +35,10 @@ Each playthrough stored here can contain any of the following properties.
 - _VOD_: Link to the Youtube playlist of the VODs
 - _Playtime_: How long the playthrough took
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Playthroughs.png" alt="Playthroughs"/>
+</p>
+
 It is worth noting that currently _VOD_ and _Playtime_ are not automatically supported with the app but will be in the future.
 If you want to add this data you need to just manually edit the json file.
 
@@ -40,6 +50,10 @@ Each boss contains the following properties
 - _Boss_: The name of the boss
 - _Deaths_: How many deaths have happened to this boss
 - _Status_: Is this Boss "Defeated", "Undefeated" or "Current"
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Boss.png" alt="Boss"/>
+</p>
 
 ## Deaths Folder
 Within the Deaths folder there are 3 text files: **Boss.txt**, **Game.txt**, and **Total.txt**.
@@ -66,6 +80,10 @@ The layers can be broken down as follows:
 
 Each of these layers can accept a variety of different commands.
 Using the command _help_ in the Top layer will print out the full list of commands as well as which layers they belong to.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Help.png" alt="Help"/>
+</p>
 
 ## Top
 The Top layer is the first layer in the application.
