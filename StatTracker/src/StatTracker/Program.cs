@@ -79,7 +79,7 @@ namespace StatTracker
             if(appVersion < latestVersion)
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("There is a newer version of Stream Stat Tracker available at https://raw.githubusercontent.com/archieyates/stream-stats-tracker/Releases/StatTracker");
+                Console.WriteLine("There is a newer version of Stream Stat Tracker available at https://github.com/archieyates/stream-stats-tracker/releases");
             }
         }
     }
