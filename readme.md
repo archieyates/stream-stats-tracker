@@ -114,7 +114,7 @@ The full list of commands are:
 - _[new]_: Create a new boss (sets to current)
 - _[list]_: List all the bosses for this playthrough
 - _[current]_: Set the current boss
-- _[complete]_: Mark current boss as defeated
+- _[defeat]_: Mark current boss as defeated
 - _[delete]_: Delete a specified boss
 - _[esc]_: Return back to main
 
