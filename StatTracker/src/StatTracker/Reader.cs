@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.Text.RegularExpressions;
 
 namespace StatTracker
 {
@@ -180,21 +179,55 @@ namespace StatTracker
         private void NewGame()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            // Lookup is used as the unique identifier for each playthrough
-            Console.Write("Enter Lookup: ");
-            string lookup = Console.ReadLine().ToLower();
-
-            // Check this playthrough doesn't already exist
-            if (Manager.Playthroughs.Find(p => p.Lookup == lookup) != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("{0} already in use", lookup);
-                return;
-            }
 
             // Game Name is the actual name of the game and doesn't need to be unique
             Console.Write("Enter Game Name: ");
             string gameName = Console.ReadLine();
+
+            // Lookup is used as the unique identifier for each playthrough
+            string lookup = String.Empty; 
+
+            // If we're auto-generating the lookup then remove all the spaces from the game name
+            if (Program.Settings.AutoGenerateLookup)
+            {
+                bool lookupInvalid = true;
+                string gameNameShortened = Regex.Replace(gameName, "[^0-9a-zA-Z]+", "").ToLower();
+                string potentialLookup = gameNameShortened;
+                int index = 1;
+
+                do
+                {
+                    // If the lookup doesn't exist then bail out
+                    if (Manager.Playthroughs.Find(p => p.Lookup == potentialLookup) == null)
+                    {
+                        lookupInvalid = false;
+                    }
+                    else
+                    {
+                        // Otherwise increase the number on the end and try again
+                        index++;
+                        potentialLookup = gameNameShortened + index.ToString();
+                    }
+
+                } while (lookupInvalid);
+
+                lookup = potentialLookup;
+            }
+            else
+            {
+                Console.Write("Enter Lookup: ");
+                lookup = Console.ReadLine().ToLower();
+                // Make sure it's in a format that won't mess with text files
+                lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
+
+                // Check this playthrough doesn't already exist
+                if (Manager.Playthroughs.Find(p => p.Lookup == lookup) != null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("{0} already in use", lookup);
+                    return;
+                }
+            }
 
             // Manager handles the actual data-side
             Manager.AddNewPlaythrough(lookup, gameName);
@@ -241,21 +274,55 @@ namespace StatTracker
         private void NewBoss()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            // Lookup is used as the unique identifier for each boss
-            Console.Write("Enter Lookup: ");
-            string lookup = Console.ReadLine().ToLower();
 
-            // Check this boss doesn't already exist
-            if (Manager.Bosses.Find(b => b.Lookup == lookup) != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("{0} already in use", lookup);
-                return;
-            }
-
-            // Boss Name is the actual name of the boss and doesn't need to be unique
+            // Game Name is the actual name of the game and doesn't need to be unique
             Console.Write("Enter Boss Name: ");
             string bossName = Console.ReadLine();
+
+            // Lookup is used as the unique identifier for each boss
+            string lookup = String.Empty;
+
+            // If we're auto-generating the lookup then remove all the spaces from the game name
+            if (Program.Settings.AutoGenerateLookup)
+            {
+                bool lookupInvalid = true;
+                string bossNameShortened = Regex.Replace(bossName, "[^0-9a-zA-Z]+", "").ToLower();
+                string potentialLookup = bossNameShortened;
+                int index = 1;
+
+                do
+                {
+                    // If the lookup doesn't exist then bail out
+                    if (Manager.Bosses.Find(b => b.Lookup == potentialLookup) == null)
+                    {
+                        lookupInvalid = false;
+                    }
+                    else
+                    {
+                        // Otherwise increase the number on the end and try again
+                        index++;
+                        potentialLookup = bossNameShortened + index.ToString();
+                    }
+
+                } while (lookupInvalid);
+
+                lookup = potentialLookup;
+            }
+            else
+            {
+                Console.Write("Enter Lookup: ");
+                lookup = Console.ReadLine().ToLower();
+                // Make sure it's in a format that won't mess with text files
+                lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
+
+                // Check this playthrough doesn't already exist
+                if (Manager.Bosses.Find(b => b.Lookup == lookup) != null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("{0} already in use", lookup);
+                    return;
+                }
+            }
 
             // Manager handles the actual data-side
             Manager.AddNewBoss(lookup, bossName);

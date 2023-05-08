@@ -1,10 +1,14 @@
 ﻿using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Xml;
 
 namespace StatTracker
 {
     class Program
     {
+        public static Settings Settings = new Settings();
+
         static void Main(string[] args)
         {
             Console.Title = "Stream Stat Tracker";
@@ -14,6 +18,9 @@ namespace StatTracker
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("{0} v{1}", appName, version);
+
+            // Load Settings
+            LoadSettings();
 
             // Check for a version update
             VersionCheck();
@@ -81,6 +88,26 @@ namespace StatTracker
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("There is a newer version of Stream Stat Tracker available at https://github.com/archieyates/stream-stats-tracker/releases");
             }
+        }
+
+        private static void LoadSettings()
+        {
+            string fileName = "Config.json";
+
+            // Create the file if it doesn't exist
+            if (!File.Exists(fileName))
+            {
+                Console.WriteLine("Creating Config.json");
+                // Create an empty entry so the basic JSON structure is created correctly
+                Settings newData = new Settings();
+                string json = JsonSerializer.Serialize<Settings>(newData, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                File.WriteAllText(fileName, json);
+            }
+
+            // Deserialize the file
+            string jsonString = System.IO.File.ReadAllText(fileName);
+            Settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            
         }
     }
 }

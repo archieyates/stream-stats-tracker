@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace StatTracker
+﻿namespace StatTracker
 {
     public class Boss
     {
