@@ -6,8 +6,6 @@
 Stream Stat Tracker provides a console application for tracking various data during game playthroughs.
 The core functionality revolves around tracking deaths and boss encounters although some additional data such as session counts, and VOD links are supported.
 
-Stream Stat Tracker requires .NET 6.0 or later in order to run which you can download [here](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
-
 ## Running The App
 When running SST for the first time it will automatically generate several files that are used as part of its tracking process inside a new folder called **Stats**.
 
