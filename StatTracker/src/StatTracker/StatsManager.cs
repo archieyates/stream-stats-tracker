@@ -457,7 +457,7 @@ namespace StatTracker
             SavePlaythroughs();
             SaveDeaths();
         }
-        private bool CheckCurrentPlaythrough()
+        public bool CheckCurrentPlaythrough()
         {
             // Checks if there is a current playthrough
             if (CurrentPlaythrough == String.Empty || Playthroughs.Find(p => p.Lookup == CurrentPlaythrough) == null)
@@ -472,7 +472,7 @@ namespace StatTracker
                 return true;
             }
         }
-        private bool CheckCurrentBoss()
+        public bool CheckCurrentBoss()
         {
             // Checks if there is a current playthrough
             if (CurrentBoss == String.Empty || Bosses.Find(b=>b.Lookup == CurrentBoss) == null)

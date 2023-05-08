@@ -155,6 +155,11 @@ namespace StatTracker
         }
         private void Boss()
         {
+            if(!Manager.CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Please enter boss command: ");
             // Read the input
