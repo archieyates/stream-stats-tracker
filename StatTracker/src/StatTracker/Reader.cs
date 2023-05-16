@@ -12,6 +12,7 @@ namespace StatTracker
         Dictionary<string, Tuple<List<string>, string, Action>> GameFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> BossFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> DeathFunctions;
+        Dictionary<string, Tuple<List<string>, string, Action>> SettingsFunctions;
 
         public void Run()
         {
@@ -21,8 +22,7 @@ namespace StatTracker
             // Program just continues to run parsing inputs
             while (true)
             {
-                Console.ResetColor();
-                Console.Write("Please enter base command or 'help' for command list: ");
+                Program.Write(ConsoleColor.White, "Please enter base command or 'help' for command list: ");
                 // Read the input
                 string input = Console.ReadLine().ToLower();
                 // Parse and run the command
@@ -47,6 +47,10 @@ namespace StatTracker
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\nDeath Commands");
             WriteFunctionData(DeathFunctions);
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("\nSettings Commands");
+            WriteFunctionData(SettingsFunctions);
         }
         private void InitFunctionData()
         {
@@ -56,6 +60,7 @@ namespace StatTracker
                 {"game", Tuple.Create(new List<string>(){"game", "playthrough"},"Perform actions on the playthrough data (using Game Commands)", Game) },
                 {"boss", Tuple.Create(new List<string>(){"boss", "bosses"},"Perform actions on the boss data for the current playthrough (using Boss Commands)", Boss) },
                 {"death", Tuple.Create(new List<string>(){"death", "deaths"},"Perform actions on the death counts (using Death Commands)", Death) },
+                {"settings", Tuple.Create(new List<string>(){"settings"},"Modify the settings file", Settings) },
                 {"++", Tuple.Create(new List<string>(){ "++"},"Increment the death count shortcut", AddDeath) },
                 {"--", Tuple.Create(new List<string>(){ "--"},"Decrement the death count shortcut", SubtractDeath) },
                 {"help", Tuple.Create(new List<string>(){ "help", "commands"},"List help", Help) }
@@ -91,11 +96,18 @@ namespace StatTracker
                 {"subtract", Tuple.Create(new List<string>(){ "subtract", "--"},"Decrement the death count", SubtractDeath) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
+
+            // Functions that can be called when settings is input at the top level
+            SettingsFunctions = new Dictionary<string, Tuple<List<string>, string, Action>>()
+            {
+                {"change", Tuple.Create(new List<string>(){"edit", "change"},"Edit the value of a setting", EditSetting) },
+                {"list", Tuple.Create(new List<string>(){ "list"},"List all settings and their values", ListSettings) },
+                {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
+            };
         }
         private void WriteFunctionData(Dictionary<string, Tuple<List<string>, string, Action>> Functions)
         {
             // Loop through all the dictionaries
-            Console.ForegroundColor = ConsoleColor.Green;
             foreach (KeyValuePair<string, Tuple<List<string>, string, Action>> entry in Functions)
             {
                 // List all the accepted commands
@@ -115,6 +127,7 @@ namespace StatTracker
                 }
                 // Close off the list and also print the description
                 outputString += "]: " + entry.Value.Item2;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(outputString);
             }
         }
@@ -136,14 +149,12 @@ namespace StatTracker
             }
 
             // Invalid command: restart the loop
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Command '{0}' not found", Command);
+            Program.WriteLine(ConsoleColor.Red, "Command '{0}' not found", Command);
             return false;
         }
         private void Game()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Please enter game command: ");
+            Program.Write(ConsoleColor.Yellow, "Please enter game command: ");
             // Read the input
             string input = Console.ReadLine().ToLower();
             // Parse and run the command
@@ -154,8 +165,7 @@ namespace StatTracker
         }
         private void Boss()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Please enter boss command: ");
+            Program.Write(ConsoleColor.Yellow, "Please enter boss command: ");
             // Read the input
             string input = Console.ReadLine().ToLower();
             // Parse and run the command
@@ -166,8 +176,7 @@ namespace StatTracker
         }
         private void Death()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Please enter death command: ");
+            Program.Write(ConsoleColor.Yellow, "Please enter death command: ");
             // Read the input
             string input = Console.ReadLine().ToLower();
             // Parse and run the command
@@ -176,12 +185,23 @@ namespace StatTracker
                 Death();
             }
         }
+        private void Settings()
+        {
+            Program.Write(ConsoleColor.Yellow, "Please enter setting command: ");
+            // Read the input
+            string input = Console.ReadLine();
+
+            // Parse and run the command
+            if (!ExecuteFunction(input, SettingsFunctions))
+            {
+                Settings();
+            }
+
+        }
         private void NewGame()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-
             // Game Name is the actual name of the game and doesn't need to be unique
-            Console.Write("Enter Game Name: ");
+            Program.Write(ConsoleColor.Blue, "Enter Game Name: ");
             string gameName = Console.ReadLine();
 
             // Lookup is used as the unique identifier for each playthrough
@@ -215,7 +235,7 @@ namespace StatTracker
             }
             else
             {
-                Console.Write("Enter Lookup: ");
+                Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
                 lookup = Console.ReadLine().ToLower();
                 // Make sure it's in a format that won't mess with text files
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
@@ -223,8 +243,7 @@ namespace StatTracker
                 // Check this playthrough doesn't already exist
                 if (Manager.Playthroughs.Find(p => p.Lookup == lookup) != null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("{0} already in use", lookup);
+                    Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
                 }
             }
@@ -243,9 +262,8 @@ namespace StatTracker
         }
         private void SetCurrentGame()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
             // The unique ID of the playthrough
-            Console.Write("Enter Lookup: ");
+            Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
@@ -263,9 +281,8 @@ namespace StatTracker
         }
         private void DeleteGame()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
             // The unique ID of the playthrough
-            Console.Write("Enter Lookup: ");
+            Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles actual data
@@ -273,10 +290,8 @@ namespace StatTracker
         }
         private void NewBoss()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-
-            // Game Name is the actual name of the game and doesn't need to be unique
-            Console.Write("Enter Boss Name: ");
+            // Boss Name is the actual name of the game and doesn't need to be unique
+            Program.Write(ConsoleColor.Blue, "Enter Boss Name: ");
             string bossName = Console.ReadLine();
 
             // Lookup is used as the unique identifier for each boss
@@ -310,7 +325,7 @@ namespace StatTracker
             }
             else
             {
-                Console.Write("Enter Lookup: ");
+                Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
                 lookup = Console.ReadLine().ToLower();
                 // Make sure it's in a format that won't mess with text files
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
@@ -318,8 +333,7 @@ namespace StatTracker
                 // Check this playthrough doesn't already exist
                 if (Manager.Bosses.Find(b => b.Lookup == lookup) != null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("{0} already in use", lookup);
+                    Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
                 }
             }
@@ -338,9 +352,8 @@ namespace StatTracker
         }
         private void SetCurrentBoss()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
             // The unique ID of the boss
-            Console.Write("Enter Lookup: ");
+            Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
@@ -353,9 +366,8 @@ namespace StatTracker
         }
         private void DeleteBoss()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
             // Lookup is used as the unique identifier for each boss
-            Console.Write("Enter Lookup: ");
+            Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
@@ -370,6 +382,57 @@ namespace StatTracker
         {
             // Manager handles the actual data
             Manager.SubtractDeath();
+        }
+        private void EditSetting()
+        {
+            Program.Write(ConsoleColor.Blue, "Setting to Modify: ");
+            string setting = Console.ReadLine();
+
+            // Look for the property
+            Object property = Program.Settings.GetPropertyValue(setting);
+
+            // Bail if it's null
+            if (property == null)
+            {
+                Program.WriteLine(ConsoleColor.Red, "Property {0} doesn't exist", setting);
+                return;
+            }
+            
+            // Get the property type
+            Type propType = property.GetType();
+
+            // Get the new value
+            Program.Write(ConsoleColor.Blue, "New Value: ");
+            string value = Console.ReadLine();
+
+            Object newValue = null;
+            try
+            {
+                newValue = Convert.ChangeType(value, propType);
+            }
+            catch (Exception ex)
+            {
+                Program.WriteLine(ConsoleColor.Red, "Failed to convert {0} for reason: {1}", value, ex.Message);
+                return;
+            }
+            
+
+            // On the off chance that the complete invalid value is entered but is somehow converted (unlikely)
+            if(newValue == null)
+            {
+                Program.WriteLine(ConsoleColor.Red, "Conversion of value {0} failed for unknown reason", value);
+                return;
+            }
+
+            // Otherwise set the new value and save
+            Program.Settings.SetPropertyValue(setting, newValue);
+            Program.SaveSettings();
+
+            Program.WriteLine(ConsoleColor.Green, "Set {0} to {1}", setting, value);
+        }
+        private void ListSettings()
+        {
+
         }
         private void Return()
         {

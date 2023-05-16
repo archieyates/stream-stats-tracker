@@ -36,8 +36,6 @@ namespace StatTracker
 
         private static void CheckMissingDirectories()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-
             // Ensure that the required directories always exist
             List<Tuple<string, string>> dirs = new List<Tuple<string, string>>()
             {
@@ -51,7 +49,7 @@ namespace StatTracker
                 if (!Directory.Exists(dir.Item2))
                 {
                     Directory.CreateDirectory(dir.Item2);
-                    Console.WriteLine("Creating Directory {0}", dir.Item1);
+                    Program.WriteLine(ConsoleColor.Red, "Creating Directory {0}", dir.Item1);
                 }
             }
         }
@@ -97,7 +95,7 @@ namespace StatTracker
             // Create the file if it doesn't exist
             if (!File.Exists(fileName))
             {
-                Console.WriteLine("Creating Config.json");
+                Program.WriteLine(ConsoleColor.Yellow, "Creating Config.json");
                 // Create an empty entry so the basic JSON structure is created correctly
                 Settings newData = new Settings();
                 string json = JsonSerializer.Serialize<Settings>(newData, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
@@ -109,5 +107,47 @@ namespace StatTracker
             Settings = JsonSerializer.Deserialize<Settings>(jsonString);
             
         }
+        public static void SaveSettings()
+        {
+            // Save out the data
+            string fileName = "Config.json";
+            string json = JsonSerializer.Serialize<Settings>(Settings, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            File.WriteAllText(fileName, json);
+        }
+
+        public static void WriteLine(ConsoleColor Colour, string Input, params object[] args)
+        {
+            Console.ForegroundColor = Colour;
+            string output = Input;
+
+            // If we are using timestamps then prefix our output string with them
+            if(Settings != null)
+            {
+                if(Settings.UseTimeStamps)
+                {
+                    output = "[" + DateTime.Now.ToString() + "] " + output;
+                }
+            }
+
+            Console.WriteLine(output, args);
+        }
+
+        public static void Write(ConsoleColor Colour, string Input, params object[] args)
+        {
+            Console.ForegroundColor = Colour;
+            string output = Input;
+
+            // If we are using timestamps then prefix our output string with them
+            if (Settings != null)
+            {
+                if (Settings.UseTimeStamps)
+                {
+                    output = "[" + DateTime.Now.ToString() + "] " + output;
+                }
+            }
+
+            Console.Write(output, args);
+        }
+
     }
 }
