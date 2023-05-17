@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Linq;
-
-namespace StatTracker
+﻿namespace StatTracker
 {
     public class Playthrough
     {
