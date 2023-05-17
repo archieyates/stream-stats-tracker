@@ -33,7 +33,6 @@ namespace StatTracker
             Reader reader = new Reader();
             reader.Run();
         }
-
         private static void CheckMissingDirectories()
         {
             // Ensure that the required directories always exist
@@ -53,7 +52,6 @@ namespace StatTracker
                 }
             }
         }
-
         private static void VersionCheck()
         {
             // Grab the project info from the repo
@@ -87,7 +85,6 @@ namespace StatTracker
                 Console.WriteLine("There is a newer version of Stream Stat Tracker available at https://github.com/archieyates/stream-stats-tracker/releases");
             }
         }
-
         private static void LoadSettings()
         {
             string fileName = "Config.json";
@@ -114,7 +111,6 @@ namespace StatTracker
             string json = JsonSerializer.Serialize<Settings>(Settings, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             File.WriteAllText(fileName, json);
         }
-
         public static void WriteLine(ConsoleColor Colour, string Input, params object[] args)
         {
             Console.ForegroundColor = Colour;
@@ -131,7 +127,6 @@ namespace StatTracker
 
             Console.WriteLine(output, args);
         }
-
         public static void Write(ConsoleColor Colour, string Input, params object[] args)
         {
             Console.ForegroundColor = Colour;

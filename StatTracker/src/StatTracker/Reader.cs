@@ -405,6 +405,7 @@ namespace StatTracker
             Program.Write(ConsoleColor.Blue, "New Value: ");
             string value = Console.ReadLine();
 
+            // Convert that string value to an actual value
             Object newValue = null;
             try
             {
@@ -415,7 +416,6 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Red, "Failed to convert {0} for reason: {1}", value, ex.Message);
                 return;
             }
-            
 
             // On the off chance that the complete invalid value is entered but is somehow converted (unlikely)
             if(newValue == null)
@@ -432,7 +432,12 @@ namespace StatTracker
         }
         private void ListSettings()
         {
-
+            // Print out all the properties and their values
+            foreach (var prop in Program.Settings.GetType().GetProperties())
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(Program.Settings, null));
+            }
         }
         private void Return()
         {
