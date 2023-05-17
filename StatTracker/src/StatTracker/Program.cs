@@ -87,12 +87,12 @@ namespace StatTracker
         }
         private static void LoadSettings()
         {
-            string fileName = "Config.json";
+            string fileName = "Settings.json";
 
             // Create the file if it doesn't exist
             if (!File.Exists(fileName))
             {
-                Program.WriteLine(ConsoleColor.Yellow, "Creating Config.json");
+                Program.WriteLine(ConsoleColor.Yellow, "Creating Settings.json");
                 // Create an empty entry so the basic JSON structure is created correctly
                 Settings newData = new Settings();
                 string json = JsonSerializer.Serialize<Settings>(newData, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
@@ -107,7 +107,7 @@ namespace StatTracker
         public static void SaveSettings()
         {
             // Save out the data
-            string fileName = "Config.json";
+            string fileName = "Settings.json";
             string json = JsonSerializer.Serialize<Settings>(Settings, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             File.WriteAllText(fileName, json);
         }

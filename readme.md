@@ -1,6 +1,6 @@
 # Stream Stat Tracker
 <p align="center">
-<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Example.png" alt="Example"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/example.png" alt="Example"/>
 </p>
 
 Stream Stat Tracker provides a console application for tracking various data during game playthroughs.
@@ -15,10 +15,11 @@ When running SST for the first time it will automatically generate several files
 	- Boss.txt
 	- Game.txt
 	- Total.txt
+- Settings.json
 
 These are the files/folders that are used by the program to manage the stats.
 <p align="center">
-<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/New.png" alt="New"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/new.png" alt="New"/>
 </p>
 
 ## Files
@@ -34,7 +35,7 @@ Each playthrough stored here can contain any of the following properties.
 - _Playtime_: How long the playthrough took
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Playthroughs.png" alt="Playthroughs"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/playthroughs.png" alt="Playthroughs"/>
 </p>
 
 It is worth noting that currently _VOD_ and _Playtime_ are not automatically supported with the app but will be in the future.
@@ -50,7 +51,7 @@ Each boss contains the following properties
 - _Status_: Is this Boss "Defeated", "Undefeated" or "Current"
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Boss.png" alt="Boss"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/boss.png" alt="Boss"/>
 </p>
 
 ## Deaths Folder
@@ -66,6 +67,12 @@ If there isn't a current game then this will just be 0.
 **Total.txt** tracks the total deaths across all playthroughs.
 This is automatically summed anytime the deaths change.
 
+## Settings.json
+Settings.json contains the various settings that will be added for customising how the app behaves. The specific contents will be updated as development continues and as of the most recent version contains the following:
+
+- _AutoGenerateLookup_ (default: **false**) - will generate the lookup of playthroughs/bosses based on the name of the playthrough/boss e.g. "Resident Evil 4 Remake" would become "residentevil4remake"
+- _UseTimeStamps_ (default: **false**) -  Assign time stamps to the majority of messages in the console (some such as listing data/commands will not be timestamped)
+
 ## Layers
 Stream Stat Tracker uses text commands entered into the console in order to update its stats.
 You can consider the app has having several "layers" of commands where one command will take you to the next set of commands.
@@ -75,12 +82,13 @@ The layers can be broken down as follows:
 - _Game_: Sublayer that handles anything related to the game/playthrough
 - _Boss_: Sublayer that handles anything related to the bosses of the current game/playthrough
 - _Death_: Sublayer that handles anything related to the death counting
+- _Settings_: Sublayer that handles modifying the settings file
 
 Each of these layers can accept a variety of different commands.
 Using the command _help_ in the Top layer will print out the full list of commands as well as which layers they belong to.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/Images/Help.png" alt="Help"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/help.png" alt="Help"/>
 </p>
 
 ## Top
@@ -121,4 +129,10 @@ The Death layer updates the death counts for the current playthrough and boss.
 If there is no current playthrough then these commands will not run.
 - _[add, ++]_: Increment the death count
 - _[subtract, --]_: Decrement the death count
+- _[esc]_: Return back to main
+
+## Settings
+The Settings layer handles anything related to the **Settings.json** file.
+- _[edit, change]_: Modify a setting in the settings file
+- _[list]_ Prints out all the 
 - _[esc]_: Return back to main
