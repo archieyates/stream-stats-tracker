@@ -313,7 +313,7 @@ namespace StatTracker
                 do
                 {
                     // If the lookup doesn't exist then bail out
-                    if (Manager.Bosses.Find(b => b.Lookup == potentialLookup) == null)
+                    if (Manager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == potentialLookup) == null)
                     {
                         lookupInvalid = false;
                     }
@@ -336,7 +336,7 @@ namespace StatTracker
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
 
                 // Check this playthrough doesn't already exist
-                if (Manager.Bosses.Find(b => b.Lookup == lookup) != null)
+                if (Manager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == lookup) != null)
                 {
                     Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
@@ -350,7 +350,7 @@ namespace StatTracker
         {
             // List some boss data
             Console.ForegroundColor = ConsoleColor.Green;
-            foreach (Boss boss in Manager.Bosses)
+            foreach (Boss boss in Manager.GetCurrentPlaythrough().Bosses)
             {
                 Console.WriteLine("{0} | {1} | {2} | {3}", boss.Lookup, boss.Name, boss.Status, boss.Deaths);
             }

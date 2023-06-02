@@ -9,6 +9,7 @@
         public string Status { get; set; }
         public string VOD { get; set; }
         public string Playtime { get; set; }
+        public List<Boss> Bosses { get; set; }
 
         public Playthrough()
         {
@@ -17,6 +18,7 @@
             Status = "Scheduled";
             Deaths = 0;
             Sessions = 0;
+            Bosses = new List<Boss>();
         }
     }
     public class PlaythroughContainer

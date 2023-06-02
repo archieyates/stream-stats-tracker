@@ -40,7 +40,7 @@ namespace StatTracker
             {
                 Tuple.Create("Stats", System.AppDomain.CurrentDomain.BaseDirectory + "Stats"),
                 Tuple.Create("Deaths", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Deaths"),
-                Tuple.Create("Bosses", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Bosses")
+                Tuple.Create("Bosses", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Playthroughs")
             };
 
             foreach(var dir in dirs)
