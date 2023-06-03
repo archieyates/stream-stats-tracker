@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace StatTracker
@@ -19,16 +20,22 @@ namespace StatTracker
         {
             Console.ForegroundColor = ConsoleColor.Green;
             LoadPlaythroughs();
+
+            // If there aren't any playthroughs check if there is legacy data to import
+            if (Playthroughs.Count == 0)
+            {
+                ConvertLegacyData();
+            }
         }
         private void LoadPlaythroughs()
         {
             Playthroughs.Clear();
-            string fileName = "Stats\\Playthroughs\\list.txt";
+            string fileName = "Stats\\Playthroughs\\_Playthroughs.txt";
 
             // Create the file if it doesn't exist
             if (!File.Exists(fileName))
             {
-                Program.WriteLine(ConsoleColor.Yellow, "Creating list.txt");
+                Program.WriteLine(ConsoleColor.Yellow, "Creating _Playthroughs.txt");
                 File.Create(fileName).Dispose();
             }
 
@@ -67,15 +74,111 @@ namespace StatTracker
             // Update the death files
             SaveDeaths();
         }
-        // TODO: FROM HERE
+        public void ConvertLegacyData()
+        {
+            Playthroughs.Clear();
+
+            // Look for the old playthroughs file
+            string playthroughFile = "Stats\\Playthroughs.json";
+            if (File.Exists(playthroughFile))
+            {
+                Program.WriteLine(ConsoleColor.Yellow, "Converting Playthroughs.JSON");
+
+                // Go through all the legacy playthroughs
+                string jsonString = System.IO.File.ReadAllText(playthroughFile);
+                LegacyPlaythroughContainer playthroughs = JsonSerializer.Deserialize<LegacyPlaythroughContainer>(jsonString);
+                foreach (Playthrough playthrough in playthroughs.Playthroughs)
+                {
+                    // Add to the playthroughs
+                    Program.WriteLine(ConsoleColor.Green, "Converting {0}", playthrough.Lookup);
+                    Playthroughs.Add(playthrough);
+
+                    // See if there is boss data associated with the playthrough
+                    string bossesFile = String.Format("Stats\\Bosses\\{0}.json", playthrough.Lookup);
+                    if (File.Exists(bossesFile))
+                    {
+                        // Get all the legacy bosses
+                        jsonString = System.IO.File.ReadAllText(bossesFile);
+                        LegacyBossContainer bosses = JsonSerializer.Deserialize<LegacyBossContainer>(jsonString);
+                        if (bosses.Bosses != null)
+                        {
+                            // Go through all the legacy bosses
+                            foreach (Boss boss in bosses.Bosses)
+                            {
+                                Program.WriteLine(ConsoleColor.Blue, "\tConverting {0}", boss.Lookup);
+                                // Add the boss to the playthrough
+                                Playthroughs.Find(p => p.Lookup == playthrough.Lookup).Bosses.Add(boss);
+                            }
+                        }
+                    }
+
+                    // Set current playthrough
+                    if (playthrough.Status == "Current")
+                    {
+                        CurrentPlaythrough = playthrough.Lookup;
+                        CurrentGameDeaths = playthrough.Deaths;
+                    }
+
+                    // Set current boss
+                    Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
+                    if (currentBoss != null)
+                    {
+                        CurrentBoss = currentBoss.Lookup;
+                        CurrentBossDeaths = currentBoss.Deaths;
+                    }
+                }
+
+                // Save all the playthrough file
+                SavePlaythroughs();
+                SaveDeaths();
+
+                // Delete all the old data (if the user wants to)
+                Program.WriteLine(ConsoleColor.Yellow, "Data converted. It is now safe to delete Playthroughs.json and the Bosses folder");
+                Program.Write(ConsoleColor.White, "Would you like to do this now? (y/n): ");
+                string answer = Console.ReadLine().ToLower();
+                if(answer == "y")
+                {
+                    File.Delete(playthroughFile);
+                    Program.WriteLine(ConsoleColor.Yellow, "Deleted Playthroughs.json");
+                    Directory.Delete("Stats\\Bosses", true);
+                    Program.WriteLine(ConsoleColor.Yellow, "Deleted Bosses folder");
+                }
+            }
+        }
         private void SavePlaythroughs()
         {
-            string fileName = "Stats\\Playthroughs.json";
+            // Save all playthroughs
+            foreach (Playthrough playthrough in Playthroughs)
+            {
+                string playthroughFile = String.Format("Stats\\Playthroughs\\{0}.json", playthrough.Lookup);
+                string json = JsonSerializer.Serialize<Playthrough>(playthrough, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                File.WriteAllText(playthroughFile, json);
+            }
 
-            // Serialize out the playthrough data
-            PlaythroughContainer dataContainer = BuildPlaythroughData();
-            string json = JsonSerializer.Serialize<PlaythroughContainer>(dataContainer, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
-            File.WriteAllText(fileName, json);
+            // Save out the list data
+            SaveList();
+         }
+        private void SaveCurrentPlaythrough()
+        {
+            // Find and save the current playthrough
+            Playthrough current = Playthroughs.Find(p => p.Lookup == CurrentPlaythrough);
+            if (current != null)
+            {
+                string playthroughFile = String.Format("Stats\\Playthroughs\\{0}.json", current.Lookup);
+                string json = JsonSerializer.Serialize<Playthrough>(current, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                File.WriteAllText(playthroughFile, json);
+            }
+        }
+        private void SavePlaythrough(String Lookup)
+        {
+            // Save a specific playthrough
+            Playthrough playthrough = Playthroughs.Find(p => p.Lookup == Lookup);
+            if (playthrough != null)
+            {
+                string playthroughFile = String.Format("Stats\\Playthroughs\\{0}.json", playthrough.Lookup);
+                string json = JsonSerializer.Serialize<Playthrough>(playthrough, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                File.WriteAllText(playthroughFile, json);
+            }
         }
         private void SaveDeaths()
         {
@@ -91,6 +194,24 @@ namespace StatTracker
             File.WriteAllText("Stats\\Deaths\\Total.txt", TotalDeaths.ToString());
             File.WriteAllText("Stats\\Deaths\\Boss.txt", CurrentBossDeaths.ToString());
         }
+        private void SaveList()
+        {
+            string fileName = "Stats\\Playthroughs\\_Playthroughs.txt";
+
+            // Create the file if it doesn't exist
+            if (!File.Exists(fileName))
+            {
+                Program.WriteLine(ConsoleColor.Yellow, "Creating _Playthroughs.txt");
+                File.Create(fileName).Dispose();
+            }
+
+            string list = String.Empty;
+            foreach (Playthrough playthrough in Playthroughs)
+            {
+                list += String.Format("{0}\n", playthrough.Lookup);
+            }
+            File.WriteAllText(fileName, list);
+        }
         public void AddNewPlaythrough(string Lookup, string Name)
         {
             // Create new playthrough entry
@@ -100,7 +221,7 @@ namespace StatTracker
             Playthroughs.Add(newPlaythrough);
 
             // Save out the playthrough file
-            SavePlaythroughs();
+            SavePlaythrough(Lookup);
             Program.WriteLine(ConsoleColor.Green, "Added New Playthrough \"{0}\" with Lookup \"{1}\"", Name, Lookup);
 
             // If there isn't a current playthrough then mark this one as current
@@ -108,8 +229,11 @@ namespace StatTracker
             {
                 SetCurrentPlaythrough(newPlaythrough.Lookup);
             }
+
+            // Save out the list data
+            SaveList();
         }
-        public void SetCurrentPlaythrough(string Game)
+        public void SetCurrentPlaythrough(string Lookup)
         {
             // If there already is a current playthrough then mark it as in-progress
             if (CurrentPlaythrough != String.Empty)
@@ -119,26 +243,50 @@ namespace StatTracker
             }
 
             // Set current playthrough
-            if (Playthroughs.Find(p => p.Lookup == Game) != null)
+            Playthrough newCurrent = Playthroughs.Find(p => p.Lookup == Lookup);
+            if (newCurrent != null)
             {
                 // Mark the current playthrough
-                Playthroughs.Find(p => p.Lookup == Game).Status = "Current";
-                CurrentPlaythrough = Game;
-                CurrentGameDeaths = Playthroughs.Find(p => p.Lookup == Game).Deaths;
-                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", Game);
+                newCurrent.Status = "Current";
+                CurrentPlaythrough = Lookup;
+                CurrentGameDeaths = newCurrent.Deaths;
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", Lookup);
+
+                // Set the current boss
+                Boss currentBoss = newCurrent.Bosses.Find(b => b.Status == "Current");
+                if (currentBoss != null)
+                {
+                    CurrentBoss = currentBoss.Lookup;
+                    CurrentBossDeaths = currentBoss.Deaths;
+                }
+                else
+                {
+                    CurrentBoss = String.Empty;
+                    CurrentBossDeaths = 0;
+                }
             }
             else
             {
                 Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
             }
 
-            // Save out the data and death info
-            SavePlaythroughs();
+            // Save out the data
+            SaveCurrentPlaythrough();
             SaveDeaths();
+            SaveList();
         }
         public Playthrough GetCurrentPlaythrough()
         {
             return Playthroughs.Find(p => p.Lookup == CurrentPlaythrough);
+        }
+        public Boss GetCurrentBoss()
+        {
+            Playthrough currentPlaythrough = GetCurrentPlaythrough();
+            if(currentPlaythrough != null)
+            {
+                return currentPlaythrough.Bosses.Find(b => b.Lookup == CurrentBoss);
+            }
+            return null;
         }
         public void CompleteCurrentPlaythrough()
         {
@@ -149,16 +297,16 @@ namespace StatTracker
             }
 
             // Mark current playthrough as complete
-            Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Status = "Complete";
+            GetCurrentPlaythrough().Status = "Complete";
             // Reset our current data
-            string tempCurrentPlaythrough = CurrentPlaythrough;
+            string cachedCurrent = CurrentPlaythrough;
             CurrentPlaythrough = String.Empty;
             CurrentBoss = String.Empty;
 
             // Save data
-            SavePlaythroughs();
+            SaveCurrentPlaythrough();
 
-            Program.WriteLine(ConsoleColor.Green, "{0} set to \"Complete\"", tempCurrentPlaythrough);
+            Program.WriteLine(ConsoleColor.Green, "{0} set to \"Complete\"", cachedCurrent);
         }
         public void IncrementCurrentPlaythroughSessions()
         {
@@ -169,12 +317,13 @@ namespace StatTracker
             }
 
             // Update the session count
-            Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Sessions++;
+            GetCurrentPlaythrough().Sessions++;
 
             // Save data
-            SavePlaythroughs();
+            SaveCurrentPlaythrough();
 
-            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Sessions);
+            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().Sessions);
+            
         }
         public void DeletePlaythrough(string Lookup)
         {
@@ -190,29 +339,28 @@ namespace StatTracker
                     CurrentBoss = String.Empty;
                     CurrentGameDeaths = 0;
                     CurrentBossDeaths = 0;
-                    SaveDeaths();
                 }
 
                 // Remove the playthrough
                 Playthroughs.Remove(toDelete);
 
-                // Save data
-                SavePlaythroughs();
-
-                Program.WriteLine(ConsoleColor.Green, "{0} deleted", Lookup);
-
-                // Delete the associated boss file
-                string fileName = String.Format("Stats\\Bosses\\{0}.json", Lookup);
+                // Delete the associated playthrough file
+                string fileName = String.Format("Stats\\Playthroughs\\{0}.json", Lookup);
                 if (File.Exists(fileName))
                 {
                     File.Delete(fileName);
                     Program.WriteLine(ConsoleColor.Green, "{0} deleted", fileName);
                 }
+
+                SaveDeaths();
             }
             else
             {
                 Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
             }
+
+            // Update the list
+            SaveList();
         }
         public void AddNewBoss(string Lookup, string Name)
         {
@@ -234,87 +382,110 @@ namespace StatTracker
 
             // Save the data and update death count
             SaveDeaths();
-            SavePlaythroughs();
+            SaveCurrentPlaythrough();
         }
         public void SetCurrentBoss(string NewBoss)
         {
-            //// If there already is a current boss then set it to undefeated
-            //if (CurrentBoss != String.Empty)
-            //{
-            //    Bosses.Find(b => b.Lookup == CurrentBoss).Status = "Undefeated";
-            //    Program.WriteLine(ConsoleColor.Green, "{0} set to \"Undefeated\"", CurrentBoss);
-            //}
+            // If there isn't a current playthrough then there won't be boss data
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
 
-            //// Set current boss
-            //if (Bosses.Find(b => b.Lookup == NewBoss) != null)
-            //{
-            //    Bosses.Find(b => b.Lookup == NewBoss).Status = "Current";
-            //    CurrentBoss = NewBoss;
-            //    CurrentBossDeaths = Bosses.Find(b => b.Lookup == CurrentBoss).Deaths;
-            //    Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBoss);
-            //}
-            //else
-            //{
-            //    Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
-            //}
+            // If there already is a current boss then set it to undefeated
+            if (CurrentBoss != String.Empty)
+            {
+                GetCurrentBoss().Status = "Undefeated";
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Undefeated\"", CurrentBoss);
+            }
 
-            //// Save data and update death count
-            //SaveBosses();
-            //SaveDeaths();
+            // Set current boss
+            Playthrough currentPlaythrough = GetCurrentPlaythrough();
+            Boss currentBoss = currentPlaythrough.Bosses.Find(b => b.Lookup == NewBoss);
+            if (currentBoss != null)
+            {
+                currentBoss.Status = "Current";
+                CurrentBoss = NewBoss;
+                CurrentBossDeaths = currentBoss.Deaths;
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBoss);
+            }
+            else
+            {
+                CurrentBoss = String.Empty;
+                CurrentBossDeaths = 0;
+                Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
+            }
+
+            // Save data and update death count
+            SaveCurrentPlaythrough();
+            SaveDeaths();
         }
         public void DefeatCurrentBoss()
         {
-            //// If there isn't a current boss then it can't be updated
-            //if (!CheckCurrentBoss())
-            //{
-            //    return;
-            //}
+            // If there isn't a current playthrough then there won't be boss data
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
 
-            //// Mark boss as defeated
-            //Bosses.Find(b => b.Lookup == CurrentBoss).Status = "Defeated";
+            // Mark boss as defeated
+            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+            if (currentBoss != null)
+            {
+                currentBoss.Status = "Defeated";
 
-            //// Reset current data
-            //string tempCurrentBoss = CurrentBoss;
-            //CurrentBoss = String.Empty;
-            //CurrentBossDeaths = 0;
+                // Reset current data
+                string tempCurrentBoss = CurrentBoss;
+                CurrentBoss = String.Empty;
+                CurrentBossDeaths = 0;
 
-            //// Save data and update death count
-            //SaveBosses();
-            //SaveDeaths();
+                // Save data and update death count
+                SaveCurrentPlaythrough();
+                SaveDeaths();
 
-            //Program.WriteLine(ConsoleColor.Green, "{0} set to \"Defeated\"", tempCurrentBoss);
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Defeated\"", tempCurrentBoss);
+            }
+            else
+            {
+                Program.WriteLine(ConsoleColor.Red, "No Current Boss");
+            }
         }
         public void DeleteBoss(string Lookup)
         {
-            //// Search for the boss
-            //Boss toDelete = Bosses.Find(b => b.Lookup == Lookup);
-            //if (toDelete != null)
-            //{
-            //    // If the boss is our current one then we need to reset current data
-            //    if (toDelete.Status == "Current")
-            //    {
-            //        CurrentBoss = String.Empty;
-            //        CurrentBossDeaths = 0;
-            //    }
+            // If there isn't a current playthrough then there won't be boss data
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
 
-            //    // If a boss is being deleted then we need to remove its deaths from the count
-            //    Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths -= toDelete.Deaths;
-            //    CurrentGameDeaths = Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths;
+            // Search for the boss
+            Boss toDelete = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == Lookup);
+            if (toDelete != null)
+            {
+                // If the boss is our current one then we need to reset current data
+                if (toDelete.Status == "Current")
+                {
+                    CurrentBoss = String.Empty;
+                    CurrentBossDeaths = 0;
+                }
 
-            //    // Remove the boss
-            //    Bosses.Remove(toDelete);
+                // If a boss is being deleted then we need to remove its deaths from the count
+                GetCurrentPlaythrough().Deaths -= toDelete.Deaths;
+                CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
 
-            //    // Save data and update death count
-            //    SaveBosses();
-            //    SavePlaythroughs();
-            //    SaveDeaths();
+                // Remove the boss
+                GetCurrentPlaythrough().Bosses.Remove(toDelete);
 
-            //    Program.WriteLine(ConsoleColor.Green, "{0} deleted", Lookup);
-            //}
-            //else
-            //{
-            //    Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
-            //}
+                // Save data and update death count
+                SaveCurrentPlaythrough();
+                SaveDeaths();
+
+                Program.WriteLine(ConsoleColor.Green, "{0} deleted", Lookup);
+            }
+            else
+            {
+                Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
+            }
         }
         public void AddDeath()
         {
@@ -325,22 +496,22 @@ namespace StatTracker
             }
 
             // Increment the playthrough deaths and update the current death count
-            Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths++;
-            CurrentGameDeaths = Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths;
+            GetCurrentPlaythrough().Deaths++;
+            CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
             Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
 
-            // If there's a current boss then also update its count
-            //if (CurrentBoss != String.Empty)
-            //{
-            //    Bosses.Find(b => b.Lookup == CurrentBoss).Deaths++;
-            //    CurrentBossDeaths = Bosses.Find(b => b.Lookup == CurrentBoss).Deaths;
-            //    SaveBosses();
-
-            //    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
-            //}
+            //If there's a current boss then also update its count
+            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+            if (currentBoss != null)
+            {
+                currentBoss.Deaths++;
+                CurrentBossDeaths = currentBoss.Deaths;
+                
+                Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+            }
 
             // Save data and update death counts
-            SavePlaythroughs();
+            SaveCurrentPlaythrough();
             SaveDeaths();
         }
         public void SubtractDeath()
@@ -352,22 +523,22 @@ namespace StatTracker
             }
 
             // Decrement the playthrough deaths and update the current death count
-            Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths--;
-            CurrentGameDeaths = Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Deaths;
+            GetCurrentPlaythrough().Deaths--;
+            CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
             Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
 
             // If there's a current boss then also update its count
-            //if (CurrentBoss != String.Empty)
-            //{
-            //    Bosses.Find(b => b.Lookup == CurrentBoss).Deaths--;
-            //    CurrentBossDeaths = Bosses.Find(b => b.Lookup == CurrentBoss).Deaths;
-            //    SaveBosses();
+            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+            if (currentBoss != null)
+            {
+                currentBoss.Deaths--;
+                CurrentBossDeaths = currentBoss.Deaths;
 
-            //    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
-            //}
+                Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+            }
 
             // Save data and update death counts
-            SavePlaythroughs();
+            SaveCurrentPlaythrough();
             SaveDeaths();
         }
         public bool CheckCurrentPlaythrough()
@@ -380,20 +551,6 @@ namespace StatTracker
                 return false;
             }
             else
-            {
-                return true;
-            }
-        }
-        public bool CheckCurrentBoss()
-        {
-            // Checks if there is a current playthrough
-            //if (CurrentBoss == String.Empty || Bosses.Find(b=>b.Lookup == CurrentBoss) == null)
-            //{
-            //    Program.WriteLine(ConsoleColor.Green, "No current boss set");
-
-            //    return false;
-            //}
-            //else
             {
                 return true;
             }

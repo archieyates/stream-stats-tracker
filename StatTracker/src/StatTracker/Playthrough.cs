@@ -21,8 +21,8 @@
             Bosses = new List<Boss>();
         }
     }
-    public class PlaythroughContainer
+    public class LegacyPlaythroughContainer
     {
-        public Playthrough[] Playthroughs { get; set; }
+        public List<Playthrough> Playthroughs { get; set; } = new List<Playthrough>();
     }
 }
