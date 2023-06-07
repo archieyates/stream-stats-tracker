@@ -63,6 +63,8 @@ namespace StatTracker
                 {"settings", Tuple.Create(new List<string>(){"settings"},"Modify the settings file", Settings) },
                 {"++", Tuple.Create(new List<string>(){ "++"},"Increment the death count shortcut", AddDeath) },
                 {"--", Tuple.Create(new List<string>(){ "--"},"Decrement the death count shortcut", SubtractDeath) },
+                {"++br", Tuple.Create(new List<string>(){"++br"},"Increment the death count without counting the boss shortcut", AddBossRunDeath) },
+                {"--br", Tuple.Create(new List<string>(){"--br"},"Decrement the death count without counting the boss shortcut", SubtractBossRunDeath) },
                 {"help", Tuple.Create(new List<string>(){ "help", "commands"},"List help", Help) }
             };
 
@@ -94,6 +96,8 @@ namespace StatTracker
             {
                 {"add", Tuple.Create(new List<string>(){"add", "++"},"Increment the death count", AddDeath) },
                 {"subtract", Tuple.Create(new List<string>(){ "subtract", "--"},"Decrement the death count", SubtractDeath) },
+                {"bradd", Tuple.Create(new List<string>(){"bradd", "++br"},"Increment the death count without counting the boss", AddBossRunDeath) },
+                {"brsubtract", Tuple.Create(new List<string>(){ "brsubtract", "--br"},"Decrement the death count without counting the boss", SubtractBossRunDeath) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
 
@@ -381,12 +385,22 @@ namespace StatTracker
         private void AddDeath()
         {
             // Manager handles the actual data
-            Manager.AddDeath();
+            Manager.AddDeath(true);
         }
         private void SubtractDeath()
         {
             // Manager handles the actual data
-            Manager.SubtractDeath();
+            Manager.SubtractDeath(true);
+        }
+        private void AddBossRunDeath()
+        {
+            // Manager handles the actual data
+            Manager.AddDeath(false);
+        }
+        private void SubtractBossRunDeath()
+        {
+            // Manager handles the actual data
+            Manager.SubtractDeath(false);
         }
         private void EditSetting()
         {

@@ -61,13 +61,13 @@ namespace StatTracker
                 {
                     CurrentPlaythrough = playthrough.Lookup;
                     CurrentGameDeaths = playthrough.Deaths;
-                }
 
-                Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
-                if (currentBoss != null)
-                {
-                    CurrentBoss = currentBoss.Lookup;
-                    CurrentBossDeaths = currentBoss.Deaths;
+                    Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
+                    if (currentBoss != null)
+                    {
+                        CurrentBoss = currentBoss.Lookup;
+                        CurrentBossDeaths = currentBoss.Deaths;
+                    }
                 }
             }
 
@@ -487,7 +487,7 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
             }
         }
-        public void AddDeath()
+        public void AddDeath(bool IncludeBoss)
         {
             // If there isn't a current playthrough then we can't update the deaths for it
             if (!CheckCurrentPlaythrough())
@@ -500,21 +500,24 @@ namespace StatTracker
             CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
             Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
 
-            //If there's a current boss then also update its count
-            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
-            if (currentBoss != null)
-            {
-                currentBoss.Deaths++;
-                CurrentBossDeaths = currentBoss.Deaths;
-                
-                Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+            if (IncludeBoss)
+            { 
+                //If there's a current boss then also update its count
+                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+                if (currentBoss != null)
+                {
+                    currentBoss.Deaths++;
+                    CurrentBossDeaths = currentBoss.Deaths;
+
+                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+                }
             }
 
             // Save data and update death counts
             SaveCurrentPlaythrough();
             SaveDeaths();
         }
-        public void SubtractDeath()
+        public void SubtractDeath(bool IncludeBoss)
         {
             // If there isn't a current playthrough then we can't update the deaths for it
             if (!CheckCurrentPlaythrough())
@@ -527,14 +530,17 @@ namespace StatTracker
             CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
             Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
 
-            // If there's a current boss then also update its count
-            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
-            if (currentBoss != null)
+            if (IncludeBoss)
             {
-                currentBoss.Deaths--;
-                CurrentBossDeaths = currentBoss.Deaths;
+                // If there's a current boss then also update its count
+                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+                if (currentBoss != null)
+                {
+                    currentBoss.Deaths--;
+                    CurrentBossDeaths = currentBoss.Deaths;
 
-                Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+                }
             }
 
             // Save data and update death counts
