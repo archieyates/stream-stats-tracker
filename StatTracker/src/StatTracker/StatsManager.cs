@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace StatTracker
 {
@@ -224,10 +225,56 @@ namespace StatTracker
             SavePlaythrough(Lookup);
             Program.WriteLine(ConsoleColor.Green, "Added New Playthrough \"{0}\" with Lookup \"{1}\"", Name, Lookup);
 
-            // If there isn't a current playthrough then mark this one as current
-            if (CurrentPlaythrough == String.Empty)
+            // Set as current playthrough
+            SetCurrentPlaythrough(newPlaythrough.Lookup);
+
+            // Check if there is a saved list of bosses and import if so
+            string bossesFile = String.Format("Stats\\bosses.txt", Lookup);
+            if (File.Exists(bossesFile))
             {
-                SetCurrentPlaythrough(newPlaythrough.Lookup);
+                Program.WriteLine(ConsoleColor.Yellow, "Found bosses.txt. Would you like to import these to this playthrough?");
+                Program.Write(ConsoleColor.White, "Would you like to do this now? (y/n): ");
+                string answer = Console.ReadLine().ToLower();
+                if (answer == "y")
+                {
+                    // Each line is a boss name and an optional lookup
+                    var lines = File.ReadLines(bossesFile);
+                    foreach (var line in lines)
+                    {
+                        // Boss data
+                        string boss = String.Empty;
+                        string lookup = String.Empty;
+
+                        // Lookup separator
+                        string[] subs = line.Split("@");
+
+                        // If there is a lookup use it otherwise generate it
+                        if (subs.Count() == 1)
+                        {
+                            boss = subs[0];
+                            lookup = GenerateBossLookup(boss);
+                        }
+                        else if (subs.Count() > 1)
+                        {
+                            boss = subs[0];
+                            lookup = subs[1];
+                        }
+
+                        AddNewBoss(lookup, boss, false);
+                    }
+
+                    // If a new boss was added then unset it as this was the start of the playthrough
+                    SetCurrentBoss(String.Empty);
+
+                    // Delete the text file (if the user wants to)
+                    Program.Write(ConsoleColor.White, "Bosses imported. Delete bosses.txt? (y/n): ");
+                    answer = Console.ReadLine().ToLower();
+                    if (answer == "y")
+                    {
+                        File.Delete(bossesFile);
+                        Program.WriteLine(ConsoleColor.Yellow, "Deleted bosses.txt");
+                    }
+                }
             }
 
             // Save out the list data
@@ -362,7 +409,7 @@ namespace StatTracker
             // Update the list
             SaveList();
         }
-        public void AddNewBoss(string Lookup, string Name)
+        public void AddNewBoss(string Lookup, string Name, bool SetCurrent = true)
         {
             // If there isn't a current playthrough then there won't be boss data
             if (!CheckCurrentPlaythrough())
@@ -378,7 +425,10 @@ namespace StatTracker
             Program.WriteLine(ConsoleColor.Green, "Added New Boss \"{0}\" with Lookup \"{1}\"", Name, Lookup);
 
             // If a new boss is being added there's an assumption it is the current one being fought
-            SetCurrentBoss(Lookup);
+            if (SetCurrent)
+            {
+                SetCurrentBoss(Lookup);
+            }
 
             // Save the data and update death count
             SaveDeaths();
@@ -399,21 +449,30 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Green, "{0} set to \"Undefeated\"", CurrentBoss);
             }
 
-            // Set current boss
-            Playthrough currentPlaythrough = GetCurrentPlaythrough();
-            Boss currentBoss = currentPlaythrough.Bosses.Find(b => b.Lookup == NewBoss);
-            if (currentBoss != null)
+            if (NewBoss != String.Empty)
             {
-                currentBoss.Status = "Current";
-                CurrentBoss = NewBoss;
-                CurrentBossDeaths = currentBoss.Deaths;
-                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBoss);
+                // Set current boss
+                Playthrough currentPlaythrough = GetCurrentPlaythrough();
+                Boss currentBoss = currentPlaythrough.Bosses.Find(b => b.Lookup == NewBoss);
+                if (currentBoss != null)
+                {
+                    currentBoss.Status = "Current";
+                    CurrentBoss = NewBoss;
+                    CurrentBossDeaths = currentBoss.Deaths;
+                    Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBoss);
+                }
+                else
+                {
+                    CurrentBoss = String.Empty;
+                    CurrentBossDeaths = 0;
+                    Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
+                }
             }
             else
             {
                 CurrentBoss = String.Empty;
                 CurrentBossDeaths = 0;
-                Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
+                Program.WriteLine(ConsoleColor.Green, "Unset current boss");
             }
 
             // Save data and update death count
@@ -560,6 +619,64 @@ namespace StatTracker
             {
                 return true;
             }
+        }
+        public string GeneratePlaythroughLookup(string Name)
+        {
+            string lookup = String.Empty;
+
+            bool lookupInvalid = true;
+            string gameNameShortened = Regex.Replace(Name, "[^0-9a-zA-Z]+", "").ToLower();
+            string potentialLookup = gameNameShortened;
+            int index = 1;
+
+            do
+            {
+                // If the lookup doesn't exist then bail out
+                if (Playthroughs.Find(p => p.Lookup == potentialLookup) == null)
+                {
+                    lookupInvalid = false;
+                }
+                else
+                {
+                    // Otherwise increase the number on the end and try again
+                    index++;
+                    potentialLookup = gameNameShortened + index.ToString();
+                }
+
+            } while (lookupInvalid);
+
+            lookup = potentialLookup;
+
+            return lookup;
+        }
+        public string GenerateBossLookup(string Name)
+        {
+            string lookup = String.Empty;
+
+            bool lookupInvalid = true;
+            string bossNameShortened = Regex.Replace(Name, "[^0-9a-zA-Z]+", "").ToLower();
+            string potentialLookup = bossNameShortened;
+            int index = 1;
+
+            do
+            {
+                // If the lookup doesn't exist then bail out
+                if (GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == potentialLookup) == null)
+                {
+                    lookupInvalid = false;
+                }
+                else
+                {
+                    // Otherwise increase the number on the end and try again
+                    index++;
+                    potentialLookup = bossNameShortened + index.ToString();
+                }
+
+            } while (lookupInvalid);
+
+            lookup = potentialLookup;
+
+            return lookup;
         }
     }
 }

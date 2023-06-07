@@ -86,6 +86,7 @@ namespace StatTracker
                 {"new", Tuple.Create(new List<string>(){"new"},"Create a new boss (sets to current)", NewBoss) },
                 {"list", Tuple.Create(new List<string>(){"list"},"List all the bosses for this playthrough", ListBoss) },
                 {"current", Tuple.Create(new List<string>(){"current"},"Set the current boss", SetCurrentBoss) },
+                {"unset", Tuple.Create(new List<string>(){"unset"},"Unset the current boss", UnsetCurrentBoss) },
                 {"defeat", Tuple.Create(new List<string>(){"defeat"},"Mark current boss as defeated", DefeatBoss) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified boss", DeleteBoss) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
@@ -219,28 +220,7 @@ namespace StatTracker
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                bool lookupInvalid = true;
-                string gameNameShortened = Regex.Replace(gameName, "[^0-9a-zA-Z]+", "").ToLower();
-                string potentialLookup = gameNameShortened;
-                int index = 1;
-
-                do
-                {
-                    // If the lookup doesn't exist then bail out
-                    if (Manager.Playthroughs.Find(p => p.Lookup == potentialLookup) == null)
-                    {
-                        lookupInvalid = false;
-                    }
-                    else
-                    {
-                        // Otherwise increase the number on the end and try again
-                        index++;
-                        potentialLookup = gameNameShortened + index.ToString();
-                    }
-
-                } while (lookupInvalid);
-
-                lookup = potentialLookup;
+                lookup = Manager.GeneratePlaythroughLookup(gameName);
             }
             else
             {
@@ -309,28 +289,7 @@ namespace StatTracker
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                bool lookupInvalid = true;
-                string bossNameShortened = Regex.Replace(bossName, "[^0-9a-zA-Z]+", "").ToLower();
-                string potentialLookup = bossNameShortened;
-                int index = 1;
-
-                do
-                {
-                    // If the lookup doesn't exist then bail out
-                    if (Manager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == potentialLookup) == null)
-                    {
-                        lookupInvalid = false;
-                    }
-                    else
-                    {
-                        // Otherwise increase the number on the end and try again
-                        index++;
-                        potentialLookup = bossNameShortened + index.ToString();
-                    }
-
-                } while (lookupInvalid);
-
-                lookup = potentialLookup;
+                lookup = Manager.GenerateBossLookup(bossName);
             }
             else
             {
@@ -367,6 +326,11 @@ namespace StatTracker
 
             // Manager handles the actual data
             Manager.SetCurrentBoss(lookup);
+        }
+        private void UnsetCurrentBoss()
+        {
+            // Manager handles the actual data
+            Manager.SetCurrentBoss(String.Empty);
         }
         private void DefeatBoss()
         {
