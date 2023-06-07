@@ -89,6 +89,8 @@ namespace StatTracker
                 {"unset", Tuple.Create(new List<string>(){"unset"},"Unset the current boss", UnsetCurrentBoss) },
                 {"defeat", Tuple.Create(new List<string>(){"defeat"},"Mark current boss as defeated", DefeatBoss) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified boss", DeleteBoss) },
+                {"next", Tuple.Create(new List<string>(){ "next"},"Set the next undefeated boss as current", NextBoss) },
+                {"previous", Tuple.Create(new List<string>(){ "previous"},"Set the previous undefeated boss as current", PreviousBoss) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
 
@@ -345,6 +347,14 @@ namespace StatTracker
 
             // Manager handles the actual data
             Manager.DeleteBoss(lookup);
+        }
+        private void NextBoss()
+        {
+            Manager.NextBoss();
+        }
+        private void PreviousBoss()
+        {
+            Manager.PreviousBoss();
         }
         private void AddDeath()
         {

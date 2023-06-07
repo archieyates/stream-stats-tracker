@@ -546,6 +546,91 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
             }
         }
+        public void NextBoss()
+        {
+            // If there isn't a current playthrough then it can't be updated
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            // Get the index of the current boss
+            int currentIndex  = (CurrentBoss != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBoss)) : 0;
+            if(currentIndex == -1)
+            {
+                currentIndex = 0;
+            }
+
+            // Try and find the next boss once we know the current one
+            for(int index = (currentIndex + 1); index < GetCurrentPlaythrough().Bosses.Count; ++index)
+            {
+                Boss boss = GetCurrentPlaythrough().Bosses[index];
+
+                if(boss.Status == "Undefeated")
+                {
+                    SetCurrentBoss(boss.Lookup);
+                    return;
+                }
+            }
+
+            // Loop back around since we only started checking from the current index
+            for (int index = 0; index < currentIndex; ++index)
+            {
+                Boss boss = GetCurrentPlaythrough().Bosses[index];
+
+                if (boss.Status == "Undefeated")
+                {
+                    SetCurrentBoss(boss.Lookup);
+                    return;
+                }
+            }
+
+            // Couldn't find an undefeated boss
+            Program.WriteLine(ConsoleColor.Red, "Could not find an undefeated boss to go to");
+
+        }
+        public void PreviousBoss()
+        {
+            // If there isn't a current playthrough then it can't be updated
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            // Get the index of the current boss
+            int currentIndex = (CurrentBoss != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBoss)) : 0;
+            if (currentIndex == -1)
+            {
+                currentIndex = 0;
+            }
+
+            // Try and find the previous boss once we know the current one
+            for (int index = (currentIndex - 1); index >= 0; --index)
+            {
+                Boss boss = GetCurrentPlaythrough().Bosses[index];
+
+                if (boss.Status == "Undefeated")
+                {
+                    SetCurrentBoss(boss.Lookup);
+                    return;
+                }
+            }
+
+            // Loop back around since we only started checking from the current index
+            for (int index = (GetCurrentPlaythrough().Bosses.Count -1); index > currentIndex; ++index)
+            {
+                Boss boss = GetCurrentPlaythrough().Bosses[index];
+
+                if (boss.Status == "Undefeated")
+                {
+                    SetCurrentBoss(boss.Lookup);
+                    return;
+                }
+            }
+
+            // Couldn't find an undefeated boss
+            Program.WriteLine(ConsoleColor.Red, "Could not find an undefeated boss to go to");
+        }
         public void AddDeath(bool IncludeBoss)
         {
             // If there isn't a current playthrough then we can't update the deaths for it
