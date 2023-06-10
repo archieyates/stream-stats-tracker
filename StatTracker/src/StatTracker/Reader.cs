@@ -90,7 +90,7 @@ namespace StatTracker
                 {"defeat", Tuple.Create(new List<string>(){"defeat"},"Mark current boss as defeated", DefeatBoss) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified boss", DeleteBoss) },
                 {"next", Tuple.Create(new List<string>(){ "next"},"Set the next undefeated boss as current", NextBoss) },
-                {"previous", Tuple.Create(new List<string>(){ "previous"},"Set the previous undefeated boss as current", PreviousBoss) },
+                {"previous", Tuple.Create(new List<string>(){ "prev"},"Set the previous undefeated boss as current", PreviousBoss) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
 
