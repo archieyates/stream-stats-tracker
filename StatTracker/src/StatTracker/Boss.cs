@@ -15,8 +15,8 @@
             Deaths = 0;
         }
     }
-    public class BossContainer
+    public class LegacyBossContainer
     {
-        public Boss[] Bosses { get; set; }
+        public List<Boss> Bosses { get; set; } = new List<Boss>();
     }
 }

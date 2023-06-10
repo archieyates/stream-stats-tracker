@@ -19,14 +19,14 @@ namespace StatTracker
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("{0} v{1}", appName, version);
 
-            // Load Settings
-            LoadSettings();
-
             // Check for a version update
             VersionCheck();
 
             // Check for any missing data
             CheckMissingDirectories();
+
+            // Load Settings
+            LoadSettings();
 
             Console.ResetColor();
             // The reader is what handles the input
@@ -40,7 +40,7 @@ namespace StatTracker
             {
                 Tuple.Create("Stats", System.AppDomain.CurrentDomain.BaseDirectory + "Stats"),
                 Tuple.Create("Deaths", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Deaths"),
-                Tuple.Create("Bosses", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Bosses")
+                Tuple.Create("Playthroughs", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Playthroughs")
             };
 
             foreach(var dir in dirs)
@@ -87,7 +87,7 @@ namespace StatTracker
         }
         private static void LoadSettings()
         {
-            string fileName = "Settings.json";
+            string fileName = "Stats\\Settings.json";
 
             // Create the file if it doesn't exist
             if (!File.Exists(fileName))

@@ -9,8 +9,8 @@ The core functionality revolves around tracking deaths and boss encounters altho
 ## Running The App
 When running SST for the first time it will automatically generate several files that are used as part of its tracking process inside a new folder called **Stats**.
 
-- Playthroughs.json
-- Bosses Folder
+- Playthroughs Folder
+	- _Playthroughs.txt
 - Deaths Folder
 	- Boss.txt
 	- Game.txt
@@ -23,9 +23,10 @@ These are the files/folders that are used by the program to manage the stats.
 </p>
 
 ## Files
-### Playthroughs.json
-Playthoughs.json is where the core data relating to your playthroughs is located.
-Each playthrough stored here can contain any of the following properties.
+### Playthroughs Folder
+The Playthroughs folder is where the json files for each Playthrough are saved.
+When a new Playthrough is created a playthrough file will be automatically generated using the _Lookup_ of the playthrough as the file name. This _Lookup_ will be added to **_Playthroughs.txt** which acts as a list of all playthroughs.
+Each playthrough contains the following properties
 - _Lookup_: The lookup name for the playthrough used to identify it (this needs to be unique)
 - _Game_: The name of the game itself
 - _Deaths_: How many deaths have happened in this playthrough
@@ -33,28 +34,20 @@ Each playthrough stored here can contain any of the following properties.
 - _Status_: Is this playthrough currently in-progress, current, complete etc.
 - _VOD_: Link to the Youtube playlist of the VODs
 - _Playtime_: How long the playthrough took
+- _Bosses_: List of boss entries for this playthrough with each boss having the following formats:
+	- _Lookup_: The lookup name for the boss used to identify it (this needs to be unique)
+	- _Name_: The name of the boss
+	- _Deaths_: How many deaths have happened to this boss
+	- _Status_: Is this Boss "Defeated", "Undefeated" or "Current"
 
 <p align="center">
-<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/playthroughs.png" alt="Playthroughs"/>
+<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/playthrough.png?" alt="Boss"/>
 </p>
 
 It is worth noting that currently _VOD_ and _Playtime_ are not automatically supported with the app but will be in the future.
 If you want to add this data you need to just manually edit the json file.
 
-### Bosses Folder
-The Bosses folder is where the json files for each Playthrough's bosses are saved.
-When a new Playthrough is created a boss file will be automatically generated using the _Lookup_ of the playthrough as the file name.
-Each boss contains the following properties
-- _Lookup_: The lookup name for the boss used to identify it (this needs to be unique)
-- _Boss_: The name of the boss
-- _Deaths_: How many deaths have happened to this boss
-- _Status_: Is this Boss "Defeated", "Undefeated" or "Current"
-
-<p align="center">
-<img src="https://archieyates.co.uk/personal/stat-tracker-dotnet/images/boss.png" alt="Boss"/>
-</p>
-
-## Deaths Folder
+### Deaths Folder
 Within the Deaths folder there are 3 text files: **Boss.txt**, **Game.txt**, and **Total.txt**.
 These text files can be read from by a program like OBS in order to display the death count.
 
@@ -98,8 +91,11 @@ The full list of commands (some support multiple entries) are:
 - _[game, playthrough]_: Perform actions on the playthrough data (using Game Layer)
 - _[boss, bosses]_: Perform actions on the boss data for the current playthrough (using Boss Layer)
 - _[death, deaths]_: Perform actions on the death counts (using Death Layer)
+- _[settings]_: Modify the settings file
 - _[++]_: Increment the death count shortcut
 - _[--]_: Decrement the death count shortcut
+- _[++br]_: Increment the death count shortcut without counting the boss shortcut
+- _[--br]_: Decrement the death count shortcut without counting the boss shortcut
 - _[help, commands]_: List help
 
 ## Game
@@ -120,8 +116,11 @@ The full list of commands are:
 - _[new]_: Create a new boss (sets to current)
 - _[list]_: List all the bosses for this playthrough
 - _[current]_: Set the current boss
+- _[unset]_: Unset the current boss
 - _[defeat]_: Mark current boss as defeated
 - _[delete]_: Delete a specified boss
+- _[next]_: Set the next undefeated boss as current
+- _[prev]_: Set the previous undefeated boss as current
 - _[esc]_: Return back to main
 
 ## Death
@@ -129,6 +128,8 @@ The Death layer updates the death counts for the current playthrough and boss.
 If there is no current playthrough then these commands will not run.
 - _[add, ++]_: Increment the death count
 - _[subtract, --]_: Decrement the death count
+- _[bradd, ++br]_: Increment the death count without counting the boss
+- _[brsubtract, --br]_: Decrement the death count without counting the boss
 - _[esc]_: Return back to main
 
 ## Settings

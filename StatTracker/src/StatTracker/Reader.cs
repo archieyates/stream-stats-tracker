@@ -63,6 +63,8 @@ namespace StatTracker
                 {"settings", Tuple.Create(new List<string>(){"settings"},"Modify the settings file", Settings) },
                 {"++", Tuple.Create(new List<string>(){ "++"},"Increment the death count shortcut", AddDeath) },
                 {"--", Tuple.Create(new List<string>(){ "--"},"Decrement the death count shortcut", SubtractDeath) },
+                {"++br", Tuple.Create(new List<string>(){"++br"},"Increment the death count without counting the boss shortcut", AddBossRunDeath) },
+                {"--br", Tuple.Create(new List<string>(){"--br"},"Decrement the death count without counting the boss shortcut", SubtractBossRunDeath) },
                 {"help", Tuple.Create(new List<string>(){ "help", "commands"},"List help", Help) }
             };
 
@@ -84,8 +86,11 @@ namespace StatTracker
                 {"new", Tuple.Create(new List<string>(){"new"},"Create a new boss (sets to current)", NewBoss) },
                 {"list", Tuple.Create(new List<string>(){"list"},"List all the bosses for this playthrough", ListBoss) },
                 {"current", Tuple.Create(new List<string>(){"current"},"Set the current boss", SetCurrentBoss) },
+                {"unset", Tuple.Create(new List<string>(){"unset"},"Unset the current boss", UnsetCurrentBoss) },
                 {"defeat", Tuple.Create(new List<string>(){"defeat"},"Mark current boss as defeated", DefeatBoss) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified boss", DeleteBoss) },
+                {"next", Tuple.Create(new List<string>(){ "next"},"Set the next undefeated boss as current", NextBoss) },
+                {"previous", Tuple.Create(new List<string>(){ "prev"},"Set the previous undefeated boss as current", PreviousBoss) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
 
@@ -94,6 +99,8 @@ namespace StatTracker
             {
                 {"add", Tuple.Create(new List<string>(){"add", "++"},"Increment the death count", AddDeath) },
                 {"subtract", Tuple.Create(new List<string>(){ "subtract", "--"},"Decrement the death count", SubtractDeath) },
+                {"bradd", Tuple.Create(new List<string>(){"bradd", "++br"},"Increment the death count without counting the boss", AddBossRunDeath) },
+                {"brsubtract", Tuple.Create(new List<string>(){ "brsubtract", "--br"},"Decrement the death count without counting the boss", SubtractBossRunDeath) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
 
@@ -215,28 +222,7 @@ namespace StatTracker
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                bool lookupInvalid = true;
-                string gameNameShortened = Regex.Replace(gameName, "[^0-9a-zA-Z]+", "").ToLower();
-                string potentialLookup = gameNameShortened;
-                int index = 1;
-
-                do
-                {
-                    // If the lookup doesn't exist then bail out
-                    if (Manager.Playthroughs.Find(p => p.Lookup == potentialLookup) == null)
-                    {
-                        lookupInvalid = false;
-                    }
-                    else
-                    {
-                        // Otherwise increase the number on the end and try again
-                        index++;
-                        potentialLookup = gameNameShortened + index.ToString();
-                    }
-
-                } while (lookupInvalid);
-
-                lookup = potentialLookup;
+                lookup = Manager.GeneratePlaythroughLookup(gameName);
             }
             else
             {
@@ -305,28 +291,7 @@ namespace StatTracker
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                bool lookupInvalid = true;
-                string bossNameShortened = Regex.Replace(bossName, "[^0-9a-zA-Z]+", "").ToLower();
-                string potentialLookup = bossNameShortened;
-                int index = 1;
-
-                do
-                {
-                    // If the lookup doesn't exist then bail out
-                    if (Manager.Bosses.Find(b => b.Lookup == potentialLookup) == null)
-                    {
-                        lookupInvalid = false;
-                    }
-                    else
-                    {
-                        // Otherwise increase the number on the end and try again
-                        index++;
-                        potentialLookup = bossNameShortened + index.ToString();
-                    }
-
-                } while (lookupInvalid);
-
-                lookup = potentialLookup;
+                lookup = Manager.GenerateBossLookup(bossName);
             }
             else
             {
@@ -336,7 +301,7 @@ namespace StatTracker
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
 
                 // Check this playthrough doesn't already exist
-                if (Manager.Bosses.Find(b => b.Lookup == lookup) != null)
+                if (Manager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == lookup) != null)
                 {
                     Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
@@ -350,7 +315,7 @@ namespace StatTracker
         {
             // List some boss data
             Console.ForegroundColor = ConsoleColor.Green;
-            foreach (Boss boss in Manager.Bosses)
+            foreach (Boss boss in Manager.GetCurrentPlaythrough().Bosses)
             {
                 Console.WriteLine("{0} | {1} | {2} | {3}", boss.Lookup, boss.Name, boss.Status, boss.Deaths);
             }
@@ -363,6 +328,11 @@ namespace StatTracker
 
             // Manager handles the actual data
             Manager.SetCurrentBoss(lookup);
+        }
+        private void UnsetCurrentBoss()
+        {
+            // Manager handles the actual data
+            Manager.SetCurrentBoss(String.Empty);
         }
         private void DefeatBoss()
         {
@@ -378,15 +348,33 @@ namespace StatTracker
             // Manager handles the actual data
             Manager.DeleteBoss(lookup);
         }
+        private void NextBoss()
+        {
+            Manager.NextBoss();
+        }
+        private void PreviousBoss()
+        {
+            Manager.PreviousBoss();
+        }
         private void AddDeath()
         {
             // Manager handles the actual data
-            Manager.AddDeath();
+            Manager.AddDeath(true);
         }
         private void SubtractDeath()
         {
             // Manager handles the actual data
-            Manager.SubtractDeath();
+            Manager.SubtractDeath(true);
+        }
+        private void AddBossRunDeath()
+        {
+            // Manager handles the actual data
+            Manager.AddDeath(false);
+        }
+        private void SubtractBossRunDeath()
+        {
+            // Manager handles the actual data
+            Manager.SubtractDeath(false);
         }
         private void EditSetting()
         {
