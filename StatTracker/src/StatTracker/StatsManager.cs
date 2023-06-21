@@ -286,6 +286,7 @@ namespace StatTracker
             if (CurrentPlaythrough != String.Empty)
             {
                 Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Status = "In_Progress";
+                SavePlaythrough(CurrentPlaythrough);
                 Program.WriteLine(ConsoleColor.Green, "{0} set to \"In-Progress\"", CurrentPlaythrough);
             }
 
