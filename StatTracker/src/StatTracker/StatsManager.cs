@@ -346,13 +346,14 @@ namespace StatTracker
 
             // Mark current playthrough as complete
             GetCurrentPlaythrough().Status = "Complete";
+
+            // Save data (doing it here because we then go on to reset)
+            SaveCurrentPlaythrough();
+
             // Reset our current data
             string cachedCurrent = CurrentPlaythrough;
             CurrentPlaythrough = String.Empty;
             CurrentBoss = String.Empty;
-
-            // Save data
-            SaveCurrentPlaythrough();
 
             Program.WriteLine(ConsoleColor.Green, "{0} set to \"Complete\"", cachedCurrent);
         }

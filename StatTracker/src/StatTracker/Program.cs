@@ -107,7 +107,7 @@ namespace StatTracker
         public static void SaveSettings()
         {
             // Save out the data
-            string fileName = "Settings.json";
+            string fileName = "Stats\\Settings.json";
             string json = JsonSerializer.Serialize<Settings>(Settings, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
             File.WriteAllText(fileName, json);
         }
