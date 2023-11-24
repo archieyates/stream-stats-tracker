@@ -7,7 +7,10 @@ namespace StatTracker
 {
     class Program
     {
+        // User-adjustable settings
         public static Settings Settings = new Settings();
+        // Manages the data for playthroughs
+        public static StatsManager StatsManager;
 
         static void Main(string[] args)
         {
@@ -28,11 +31,17 @@ namespace StatTracker
             // Load Settings
             LoadSettings();
 
-            Console.ResetColor();
-            // The reader is what handles the input
+            // Init the stat manager
+            StatsManager = new StatsManager();
+
+            // Run the reader
             Reader reader = new Reader();
             reader.Run();
+
+            Console.ResetColor();
+
         }
+        
         private static void CheckMissingDirectories()
         {
             // Ensure that the required directories always exist
@@ -43,7 +52,7 @@ namespace StatTracker
                 Tuple.Create("Playthroughs", System.AppDomain.CurrentDomain.BaseDirectory + "Stats\\Playthroughs")
             };
 
-            foreach(var dir in dirs)
+            foreach (var dir in dirs)
             {
                 if (!Directory.Exists(dir.Item2))
                 {
@@ -79,7 +88,7 @@ namespace StatTracker
             var appVersion = Assembly.GetExecutingAssembly().GetName().Version;
             var latestVersion = Version.Parse(latestVersionString);
 
-            if(appVersion < latestVersion)
+            if (appVersion < latestVersion)
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("There is a newer version of Stream Stat Tracker available at https://github.com/archieyates/stream-stats-tracker/releases");
@@ -102,7 +111,7 @@ namespace StatTracker
             // Deserialize the file
             string jsonString = System.IO.File.ReadAllText(fileName);
             Settings = JsonSerializer.Deserialize<Settings>(jsonString);
-            
+
         }
         public static void SaveSettings()
         {
@@ -117,9 +126,9 @@ namespace StatTracker
             string output = Input;
 
             // If we are using timestamps then prefix our output string with them
-            if(Settings != null)
+            if (Settings != null)
             {
-                if(Settings.UseTimeStamps)
+                if (Settings.UseTimeStamps)
                 {
                     output = "[" + DateTime.Now.ToString() + "] " + output;
                 }

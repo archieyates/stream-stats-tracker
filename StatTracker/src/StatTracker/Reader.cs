@@ -4,15 +4,13 @@ namespace StatTracker
 {
     class Reader
     {
-        // StatsManager actual manages data including saving and loading
-        StatsManager Manager = new StatsManager();
-
         // Link commands with functions
         Dictionary<string, Tuple<List<string>, string, Action>> TopFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> GameFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> BossFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> DeathFunctions;
         Dictionary<string, Tuple<List<string>, string, Action>> SettingsFunctions;
+        Dictionary<string, Tuple<List<string>, string, Action>> TwitchFunctions;
 
         public void Run()
         {
@@ -61,6 +59,7 @@ namespace StatTracker
                 {"boss", Tuple.Create(new List<string>(){"boss", "bosses"},"Perform actions on the boss data for the current playthrough (using Boss Commands)", Boss) },
                 {"death", Tuple.Create(new List<string>(){"death", "deaths"},"Perform actions on the death counts (using Death Commands)", Death) },
                 {"settings", Tuple.Create(new List<string>(){"settings"},"Modify the settings file", Settings) },
+                {"twitch", Tuple.Create(new List<string>(){"twitch"},"Manage Twitch Integration", Twitch) },
                 {"++", Tuple.Create(new List<string>(){ "++"},"Increment the death count shortcut", AddDeath) },
                 {"--", Tuple.Create(new List<string>(){ "--"},"Decrement the death count shortcut", SubtractDeath) },
                 {"++br", Tuple.Create(new List<string>(){"++br"},"Increment the death count without counting the boss shortcut", AddBossRunDeath) },
@@ -75,7 +74,9 @@ namespace StatTracker
                 {"listgame", Tuple.Create(new List<string>(){"list"},"List all the playthroughs", ListGame) },
                 {"currentgame", Tuple.Create(new List<string>(){"current"},"Set the current playthrough", SetCurrentGame) },
                 {"completegame", Tuple.Create(new List<string>(){"complete"},"Complete the current playthrough", CompleteGame) },
-                {"sessions", Tuple.Create(new List<string>(){ "sessions", "session"},"Update the session count for current playthrough", GameSession) },
+                {"sessions", Tuple.Create(new List<string>(){ "sessions", "session"},"Update the session count for current playthrough", IncrementSessionCount) },
+                {"setsession", Tuple.Create(new List<string>(){ "setsession"},"Set the session count for current playthrough", SetSessionCount) },
+                {"seturl", Tuple.Create(new List<string>(){ "url","vod"},"Set the vod link for this playthrough", SetVODLink) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified playthrough", DeleteGame) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
@@ -111,7 +112,19 @@ namespace StatTracker
                 {"list", Tuple.Create(new List<string>(){ "list"},"List all settings and their values", ListSettings) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
+
+            // Functions that can be called when twitch is input at the top level
+            TwitchFunctions = new Dictionary<string, Tuple<List<string>, string, Action>>()
+            {
+                {"connect", Tuple.Create(new List<string>(){"connect"},"Connect to Twitch", TwitchConnect) },
+                {"ban", Tuple.Create(new List<string>(){"ban"},"Ban a player from accessing the bot commands", TwitchBan) },
+                {"unban", Tuple.Create(new List<string>(){"unban"},"Unbans a player from accessing the bot commands", TwitchUnban) },
+                {"unbanall", Tuple.Create(new List<string>(){"unbanall"},"Clear the ban list", TwitchUnbanAll) },
+                {"banlist", Tuple.Create(new List<string>(){"list", "banlist"},"List all the banned accounts", TwitchBanList) },
+                {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
+            };
         }
+
         private void WriteFunctionData(Dictionary<string, Tuple<List<string>, string, Action>> Functions)
         {
             // Loop through all the dictionaries
@@ -172,7 +185,7 @@ namespace StatTracker
         }
         private void Boss()
         {
-            if(!Manager.CheckCurrentPlaythrough())
+            if (!Program.StatsManager.CheckCurrentPlaythrough())
             {
                 return;
             }
@@ -210,6 +223,18 @@ namespace StatTracker
             }
 
         }
+        private void Twitch()
+        {
+            Program.Write(ConsoleColor.Yellow, "Please enter Twitch command: ");
+            // Read the input
+            string input = Console.ReadLine();
+
+            // Parse and run the command
+            if (!ExecuteFunction(input, TwitchFunctions))
+            {
+                Twitch();
+            }
+        }
         private void NewGame()
         {
             // Game Name is the actual name of the game and doesn't need to be unique
@@ -217,12 +242,12 @@ namespace StatTracker
             string gameName = Console.ReadLine();
 
             // Lookup is used as the unique identifier for each playthrough
-            string lookup = String.Empty; 
+            string lookup = String.Empty;
 
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                lookup = Manager.GeneratePlaythroughLookup(gameName);
+                lookup = Program.StatsManager.GeneratePlaythroughLookup(gameName);
             }
             else
             {
@@ -232,7 +257,7 @@ namespace StatTracker
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
 
                 // Check this playthrough doesn't already exist
-                if (Manager.Playthroughs.Find(p => p.Lookup == lookup) != null)
+                if (Program.StatsManager.Playthroughs.Find(p => p.Lookup == lookup) != null)
                 {
                     Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
@@ -240,13 +265,13 @@ namespace StatTracker
             }
 
             // Manager handles the actual data-side
-            Manager.AddNewPlaythrough(lookup, gameName);
+            Program.StatsManager.AddNewPlaythrough(lookup, gameName);
         }
         private void ListGame()
         {
             // Prints out some game data
             Console.ForegroundColor = ConsoleColor.Green;
-            foreach (Playthrough playthrough in Manager.Playthroughs)
+            foreach (Playthrough playthrough in Program.StatsManager.Playthroughs)
             {
                 Console.WriteLine("{0} | {1} | {2} | {3}", playthrough.Lookup, playthrough.Game, playthrough.Status, playthrough.Deaths);
             }
@@ -258,17 +283,34 @@ namespace StatTracker
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
-            Manager.SetCurrentPlaythrough(lookup);
+            Program.StatsManager.SetCurrentPlaythrough(lookup);
         }
         private void CompleteGame()
         {
             // Manager handles actual data
-            Manager.CompleteCurrentPlaythrough();
+            Program.StatsManager.CompleteCurrentPlaythrough();
         }
-        private void GameSession()
+        private void IncrementSessionCount()
         {
             // Manager handles actual data
-            Manager.IncrementCurrentPlaythroughSessions();
+            Program.StatsManager.IncrementCurrentPlaythroughSessions();
+        }
+        private void SetSessionCount()
+        {
+            Program.Write(ConsoleColor.Blue, "Set Session Count: ");
+            string count = Console.ReadLine().ToLower();
+
+            // Manager handles actual data
+            Program.StatsManager.SetCurrentPlaythroughSessions(Int32.Parse(count));
+        }
+        private void SetVODLink()
+        {
+            // The url of the vod
+            Program.Write(ConsoleColor.Blue, "Enter VOD Link: ");
+            string link = Console.ReadLine().ToLower();
+
+            // Manager handles the actual data
+            Program.StatsManager.SetVODLink(link);
         }
         private void DeleteGame()
         {
@@ -277,7 +319,7 @@ namespace StatTracker
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles actual data
-            Manager.DeletePlaythrough(lookup);
+            Program.StatsManager.DeletePlaythrough(lookup);
         }
         private void NewBoss()
         {
@@ -291,7 +333,7 @@ namespace StatTracker
             // If we're auto-generating the lookup then remove all the spaces from the game name
             if (Program.Settings.AutoGenerateLookup)
             {
-                lookup = Manager.GenerateBossLookup(bossName);
+                lookup = Program.StatsManager.GenerateBossLookup(bossName);
             }
             else
             {
@@ -301,7 +343,7 @@ namespace StatTracker
                 lookup = Regex.Replace(lookup, "[^0-9a-zA-Z]+", "");
 
                 // Check this playthrough doesn't already exist
-                if (Manager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == lookup) != null)
+                if (Program.StatsManager.GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == lookup) != null)
                 {
                     Program.WriteLine(ConsoleColor.Red, "{0} already in use", lookup);
                     return;
@@ -309,13 +351,13 @@ namespace StatTracker
             }
 
             // Manager handles the actual data-side
-            Manager.AddNewBoss(lookup, bossName);
+            Program.StatsManager.AddNewBoss(lookup, bossName);
         }
         private void ListBoss()
         {
             // List some boss data
             Console.ForegroundColor = ConsoleColor.Green;
-            foreach (Boss boss in Manager.GetCurrentPlaythrough().Bosses)
+            foreach (Boss boss in Program.StatsManager.GetCurrentPlaythrough().Bosses)
             {
                 Console.WriteLine("{0} | {1} | {2} | {3}", boss.Lookup, boss.Name, boss.Status, boss.Deaths);
             }
@@ -327,17 +369,17 @@ namespace StatTracker
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
-            Manager.SetCurrentBoss(lookup);
+            Program.StatsManager.SetCurrentBoss(lookup);
         }
         private void UnsetCurrentBoss()
         {
             // Manager handles the actual data
-            Manager.SetCurrentBoss(String.Empty);
+            Program.StatsManager.SetCurrentBoss(String.Empty);
         }
         private void DefeatBoss()
         {
             // Manager handles the actual data
-            Manager.DefeatCurrentBoss();
+            Program.StatsManager.DefeatCurrentBoss();
         }
         private void DeleteBoss()
         {
@@ -346,35 +388,35 @@ namespace StatTracker
             string lookup = Console.ReadLine().ToLower();
 
             // Manager handles the actual data
-            Manager.DeleteBoss(lookup);
+            Program.StatsManager.DeleteBoss(lookup);
         }
         private void NextBoss()
         {
-            Manager.NextBoss();
+            Program.StatsManager.NextBoss();
         }
         private void PreviousBoss()
         {
-            Manager.PreviousBoss();
+            Program.StatsManager.PreviousBoss();
         }
         private void AddDeath()
         {
             // Manager handles the actual data
-            Manager.AddDeath(true);
+            Program.StatsManager.AddDeath(true);
         }
         private void SubtractDeath()
         {
             // Manager handles the actual data
-            Manager.SubtractDeath(true);
+            Program.StatsManager.SubtractDeath(true);
         }
         private void AddBossRunDeath()
         {
             // Manager handles the actual data
-            Manager.AddDeath(false);
+            Program.StatsManager.AddDeath(false);
         }
         private void SubtractBossRunDeath()
         {
             // Manager handles the actual data
-            Manager.SubtractDeath(false);
+            Program.StatsManager.SubtractDeath(false);
         }
         private void EditSetting()
         {
@@ -390,7 +432,7 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Red, "Property {0} doesn't exist", setting);
                 return;
             }
-            
+
             // Get the property type
             Type propType = property.GetType();
 
@@ -411,7 +453,7 @@ namespace StatTracker
             }
 
             // On the off chance that the complete invalid value is entered but is somehow converted (unlikely)
-            if(newValue == null)
+            if (newValue == null)
             {
                 Program.WriteLine(ConsoleColor.Red, "Conversion of value {0} failed for unknown reason", value);
                 return;
@@ -430,6 +472,56 @@ namespace StatTracker
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(Program.Settings, null));
+            }
+        }
+        private void TwitchConnect()
+        {
+            // TODO: Check channel settings
+            TwitchBot.InitTwitchListener();
+        }
+        private void TwitchBan()
+        {
+            Program.Write(ConsoleColor.Blue, "Account to Ban: ");
+            string account = Console.ReadLine().ToLower();
+
+            if (Program.Settings.BannedPlayers.Contains(account))
+            {
+                Program.WriteLine(ConsoleColor.Red, "{0} is already banned from using the bot commands", account);
+            }
+            else
+            {
+                Program.Settings.BannedPlayers.Add(account);
+                Program.SaveSettings();
+                Program.WriteLine(ConsoleColor.Green, "Banned {0} from using the bot commands", account);
+            }
+        }
+        private void TwitchUnban()
+        {
+            Program.Write(ConsoleColor.Blue, "Account to Unban: ");
+            string account = Console.ReadLine().ToLower();
+
+            if (Program.Settings.BannedPlayers.Contains(account))
+            {
+                Program.Settings.BannedPlayers.Remove(account);
+                Program.SaveSettings();
+                Program.WriteLine(ConsoleColor.Green, "Unbanned {0} from using the bot commands", account);
+            }
+            else
+            {
+                Program.WriteLine(ConsoleColor.Red, "{0} is not in ban list", account);
+            }
+        }
+        private void TwitchUnbanAll()
+        {
+            Program.Settings.BannedPlayers.Clear();
+            Program.SaveSettings();
+            Program.WriteLine(ConsoleColor.Green, "Unbanned all accounts from using the bot commands");
+        }
+        private void TwitchBanList()
+        {
+            foreach (string account in Program.Settings.BannedPlayers)
+            {
+                Program.WriteLine(ConsoleColor.Green, account);
             }
         }
         private void Return()

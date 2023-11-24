@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -372,7 +371,22 @@ namespace StatTracker
             SaveCurrentPlaythrough();
 
             Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().Sessions);
-            
+        }
+        public void SetCurrentPlaythroughSessions(int Count)
+        {
+            // If there isn't a current playthrough then it can't be updated
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            // Update the session count
+            GetCurrentPlaythrough().Sessions = Count;
+
+            // Save data
+            SaveCurrentPlaythrough();
+
+            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().Sessions);
         }
         public void DeletePlaythrough(string Lookup)
         {
@@ -764,6 +778,22 @@ namespace StatTracker
             lookup = potentialLookup;
 
             return lookup;
+        }
+
+        public void SetVODLink(string link)
+        {
+            // If there isn't a current playthrough then we can't update the deaths for it
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            GetCurrentPlaythrough().VOD = link;
+
+            // Save data
+            SaveCurrentPlaythrough();
+
+            Program.WriteLine(ConsoleColor.Green, "{0} VOD link set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().VOD);
         }
     }
 }
