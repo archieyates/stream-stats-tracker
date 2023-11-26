@@ -9,8 +9,8 @@ namespace StatTracker
         // Data for all playthroughs 
         public List<Playthrough> Playthroughs = new List<Playthrough>();
         // Current info
-        public string CurrentPlaythrough = String.Empty;
-        public string CurrentBoss = String.Empty;
+        public string CurrentPlaythroughLookup = String.Empty;
+        public string CurrentBossLookup = String.Empty;
         // Cache death data
         public int CurrentGameDeaths = 0;
         public int CurrentBossDeaths = 0;
@@ -59,13 +59,13 @@ namespace StatTracker
 
                 if (playthrough.Status == "Current")
                 {
-                    CurrentPlaythrough = playthrough.Lookup;
+                    CurrentPlaythroughLookup = playthrough.Lookup;
                     CurrentGameDeaths = playthrough.Deaths;
 
                     Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
                     if (currentBoss != null)
                     {
-                        CurrentBoss = currentBoss.Lookup;
+                        CurrentBossLookup = currentBoss.Lookup;
                         CurrentBossDeaths = currentBoss.Deaths;
                     }
                 }
@@ -115,7 +115,7 @@ namespace StatTracker
                     // Set current playthrough
                     if (playthrough.Status == "Current")
                     {
-                        CurrentPlaythrough = playthrough.Lookup;
+                        CurrentPlaythroughLookup = playthrough.Lookup;
                         CurrentGameDeaths = playthrough.Deaths;
                     }
 
@@ -123,7 +123,7 @@ namespace StatTracker
                     Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
                     if (currentBoss != null)
                     {
-                        CurrentBoss = currentBoss.Lookup;
+                        CurrentBossLookup = currentBoss.Lookup;
                         CurrentBossDeaths = currentBoss.Deaths;
                     }
                 }
@@ -161,7 +161,7 @@ namespace StatTracker
         private void SaveCurrentPlaythrough()
         {
             // Find and save the current playthrough
-            Playthrough current = Playthroughs.Find(p => p.Lookup == CurrentPlaythrough);
+            Playthrough current = Playthroughs.Find(p => p.Lookup == CurrentPlaythroughLookup);
             if (current != null)
             {
                 string playthroughFile = String.Format("Stats\\Playthroughs\\{0}.json", current.Lookup);
@@ -282,11 +282,11 @@ namespace StatTracker
         public void SetCurrentPlaythrough(string Lookup)
         {
             // If there already is a current playthrough then mark it as in-progress
-            if (CurrentPlaythrough != String.Empty)
+            if (CurrentPlaythroughLookup != String.Empty)
             {
-                Playthroughs.Find(p => p.Lookup == CurrentPlaythrough).Status = "In_Progress";
-                SavePlaythrough(CurrentPlaythrough);
-                Program.WriteLine(ConsoleColor.Green, "{0} set to \"In-Progress\"", CurrentPlaythrough);
+                Playthroughs.Find(p => p.Lookup == CurrentPlaythroughLookup).Status = "In_Progress";
+                SavePlaythrough(CurrentPlaythroughLookup);
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"In-Progress\"", CurrentPlaythroughLookup);
             }
 
             // Set current playthrough
@@ -295,7 +295,7 @@ namespace StatTracker
             {
                 // Mark the current playthrough
                 newCurrent.Status = "Current";
-                CurrentPlaythrough = Lookup;
+                CurrentPlaythroughLookup = Lookup;
                 CurrentGameDeaths = newCurrent.Deaths;
                 Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", Lookup);
 
@@ -303,12 +303,12 @@ namespace StatTracker
                 Boss currentBoss = newCurrent.Bosses.Find(b => b.Status == "Current");
                 if (currentBoss != null)
                 {
-                    CurrentBoss = currentBoss.Lookup;
+                    CurrentBossLookup = currentBoss.Lookup;
                     CurrentBossDeaths = currentBoss.Deaths;
                 }
                 else
                 {
-                    CurrentBoss = String.Empty;
+                    CurrentBossLookup = String.Empty;
                     CurrentBossDeaths = 0;
                 }
             }
@@ -324,14 +324,14 @@ namespace StatTracker
         }
         public Playthrough GetCurrentPlaythrough()
         {
-            return Playthroughs.Find(p => p.Lookup == CurrentPlaythrough);
+            return Playthroughs.Find(p => p.Lookup == CurrentPlaythroughLookup);
         }
         public Boss GetCurrentBoss()
         {
             Playthrough currentPlaythrough = GetCurrentPlaythrough();
             if(currentPlaythrough != null)
             {
-                return currentPlaythrough.Bosses.Find(b => b.Lookup == CurrentBoss);
+                return currentPlaythrough.Bosses.Find(b => b.Lookup == CurrentBossLookup);
             }
             return null;
         }
@@ -350,9 +350,9 @@ namespace StatTracker
             SaveCurrentPlaythrough();
 
             // Reset our current data
-            string cachedCurrent = CurrentPlaythrough;
-            CurrentPlaythrough = String.Empty;
-            CurrentBoss = String.Empty;
+            string cachedCurrent = CurrentPlaythroughLookup;
+            CurrentPlaythroughLookup = String.Empty;
+            CurrentBossLookup = String.Empty;
 
             Program.WriteLine(ConsoleColor.Green, "{0} set to \"Complete\"", cachedCurrent);
         }
@@ -370,7 +370,7 @@ namespace StatTracker
             // Save data
             SaveCurrentPlaythrough();
 
-            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().Sessions);
+            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythroughLookup, GetCurrentPlaythrough().Sessions);
         }
         public void SetCurrentPlaythroughSessions(int Count)
         {
@@ -386,7 +386,7 @@ namespace StatTracker
             // Save data
             SaveCurrentPlaythrough();
 
-            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().Sessions);
+            Program.WriteLine(ConsoleColor.Green, "{0} session count set to {1}", CurrentPlaythroughLookup, GetCurrentPlaythrough().Sessions);
         }
         public void DeletePlaythrough(string Lookup)
         {
@@ -398,8 +398,8 @@ namespace StatTracker
                 if (toDelete.Status == "Current")
                 {
                     // If it is then reset the current data and update the death count
-                    CurrentPlaythrough = String.Empty;
-                    CurrentBoss = String.Empty;
+                    CurrentPlaythroughLookup = String.Empty;
+                    CurrentBossLookup = String.Empty;
                     CurrentGameDeaths = 0;
                     CurrentBossDeaths = 0;
                 }
@@ -459,10 +459,10 @@ namespace StatTracker
             }
 
             // If there already is a current boss then set it to undefeated
-            if (CurrentBoss != String.Empty)
+            if (CurrentBossLookup != String.Empty)
             {
                 GetCurrentBoss().Status = "Undefeated";
-                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Undefeated\"", CurrentBoss);
+                Program.WriteLine(ConsoleColor.Green, "{0} set to \"Undefeated\"", CurrentBossLookup);
             }
 
             if (NewBoss != String.Empty)
@@ -473,20 +473,20 @@ namespace StatTracker
                 if (currentBoss != null)
                 {
                     currentBoss.Status = "Current";
-                    CurrentBoss = NewBoss;
+                    CurrentBossLookup = NewBoss;
                     CurrentBossDeaths = currentBoss.Deaths;
-                    Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBoss);
+                    Program.WriteLine(ConsoleColor.Green, "{0} set to \"Current\"", CurrentBossLookup);
                 }
                 else
                 {
-                    CurrentBoss = String.Empty;
+                    CurrentBossLookup = String.Empty;
                     CurrentBossDeaths = 0;
                     Program.WriteLine(ConsoleColor.Red, "Lookup not recognised");
                 }
             }
             else
             {
-                CurrentBoss = String.Empty;
+                CurrentBossLookup = String.Empty;
                 CurrentBossDeaths = 0;
                 Program.WriteLine(ConsoleColor.Green, "Unset current boss");
             }
@@ -504,14 +504,14 @@ namespace StatTracker
             }
 
             // Mark boss as defeated
-            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+            Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBossLookup);
             if (currentBoss != null)
             {
                 currentBoss.Status = "Defeated";
 
                 // Reset current data
-                string tempCurrentBoss = CurrentBoss;
-                CurrentBoss = String.Empty;
+                string tempCurrentBoss = CurrentBossLookup;
+                CurrentBossLookup = String.Empty;
                 CurrentBossDeaths = 0;
 
                 // Save data and update death count
@@ -540,7 +540,7 @@ namespace StatTracker
                 // If the boss is our current one then we need to reset current data
                 if (toDelete.Status == "Current")
                 {
-                    CurrentBoss = String.Empty;
+                    CurrentBossLookup = String.Empty;
                     CurrentBossDeaths = 0;
                 }
 
@@ -571,7 +571,7 @@ namespace StatTracker
             }
 
             // Get the index of the current boss
-            int currentIndex  = (CurrentBoss != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBoss)) : 0;
+            int currentIndex  = (CurrentBossLookup != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBossLookup)) : 0;
             if(currentIndex == -1)
             {
                 currentIndex = 0;
@@ -614,7 +614,7 @@ namespace StatTracker
             }
 
             // Get the index of the current boss
-            int currentIndex = (CurrentBoss != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBoss)) : 0;
+            int currentIndex = (CurrentBossLookup != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBossLookup)) : 0;
             if (currentIndex == -1)
             {
                 currentIndex = 0;
@@ -658,18 +658,18 @@ namespace StatTracker
             // Increment the playthrough deaths and update the current death count
             GetCurrentPlaythrough().Deaths++;
             CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
-            Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
+            Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythroughLookup, CurrentGameDeaths);
 
             if (IncludeBoss)
             { 
                 //If there's a current boss then also update its count
-                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBossLookup);
                 if (currentBoss != null)
                 {
                     currentBoss.Deaths++;
                     CurrentBossDeaths = currentBoss.Deaths;
 
-                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBossLookup, CurrentBossDeaths);
                 }
             }
 
@@ -688,18 +688,18 @@ namespace StatTracker
             // Decrement the playthrough deaths and update the current death count
             GetCurrentPlaythrough().Deaths--;
             CurrentGameDeaths = GetCurrentPlaythrough().Deaths;
-            Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythrough, CurrentGameDeaths);
+            Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythroughLookup, CurrentGameDeaths);
 
             if (IncludeBoss)
             {
                 // If there's a current boss then also update its count
-                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBoss);
+                Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBossLookup);
                 if (currentBoss != null)
                 {
                     currentBoss.Deaths--;
                     CurrentBossDeaths = currentBoss.Deaths;
 
-                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBoss, CurrentBossDeaths);
+                    Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentBossLookup, CurrentBossDeaths);
                 }
             }
 
@@ -710,7 +710,7 @@ namespace StatTracker
         public bool CheckCurrentPlaythrough()
         {
             // Checks if there is a current playthrough
-            if (CurrentPlaythrough == String.Empty || Playthroughs.Find(p => p.Lookup == CurrentPlaythrough) == null)
+            if (CurrentPlaythroughLookup == String.Empty || Playthroughs.Find(p => p.Lookup == CurrentPlaythroughLookup) == null)
             {
                 Program.WriteLine(ConsoleColor.Red, "No current game set");
 
@@ -780,7 +780,7 @@ namespace StatTracker
             return lookup;
         }
 
-        public void SetVODLink(string link)
+        public void SetVODLink(string Link)
         {
             // If there isn't a current playthrough then we can't update the deaths for it
             if (!CheckCurrentPlaythrough())
@@ -788,12 +788,32 @@ namespace StatTracker
                 return;
             }
 
-            GetCurrentPlaythrough().VOD = link;
+            GetCurrentPlaythrough().VOD = Link;
 
             // Save data
             SaveCurrentPlaythrough();
 
-            Program.WriteLine(ConsoleColor.Green, "{0} VOD link set to {1}", CurrentPlaythrough, GetCurrentPlaythrough().VOD);
+            Program.WriteLine(ConsoleColor.Green, "{0} VOD link set to {1}", CurrentPlaythroughLookup, GetCurrentPlaythrough().VOD);
+        }
+
+        public void SetPlaytime(int Hours, int Minutes)
+        {
+            // If there isn't a current playthrough then we can't update the deaths for it
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            // Just in case
+            int hours = Hours + (Minutes / 60);
+            int minutes = Minutes%= 60;
+
+            GetCurrentPlaythrough().Playtime = $"{hours}h {minutes}m";
+
+            // Save data
+            SaveCurrentPlaythrough();
+
+            Program.WriteLine(ConsoleColor.Green, $"{CurrentPlaythroughLookup} Playtime set to {GetCurrentPlaythrough().Playtime}");
         }
     }
 }

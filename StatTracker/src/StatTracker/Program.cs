@@ -34,6 +34,13 @@ namespace StatTracker
             // Init the stat manager
             StatsManager = new StatsManager();
 
+            // Auto-connect twitch bot
+            if(Settings.AutoConnectToTwitch)
+            {
+                TwitchBot.InitTwitchListener();
+                Thread.Sleep(1000);
+            }
+
             // Run the reader
             Reader reader = new Reader();
             reader.Run();

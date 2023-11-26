@@ -29,7 +29,7 @@ namespace StatTracker
         private StreamWriter StreamWriter;
 
         // For parsing commands
-        Dictionary<string, Tuple<List<string>, string, Action<TwitchCommand>>> Functions;
+        Dictionary<string, Tuple<string, Action<TwitchCommand>>> Functions;
 
         // Only 1 thread allowed at a time
         private static Thread TwitchThread;
@@ -50,34 +50,17 @@ namespace StatTracker
         private static void RunTwitchChatbot()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Twitch Thread Running");
-
             TwitchBot bot = new TwitchBot();
             bot.Start();
         }
 
         public void Start()
         {
-            // TODO: Move these checks to the Reader Twitch command
+            Program.WriteLine(ConsoleColor.Green, "Twitch Bot Running");
+
             ChannelName = Program.Settings.ChannelName;
             BotName = Program.Settings.BotName;
             OAuth = Environment.GetEnvironmentVariable("TWITCH_BOT_OAUTH", EnvironmentVariableTarget.User);
-
-            if (String.IsNullOrEmpty(ChannelName))
-            {
-                Program.WriteLine(ConsoleColor.Red, "CHANNEL NAME NOT SET. Please use the command: settings->change->ChannelName and set the value to your Twitch Channel");
-                return;
-            }
-            if (String.IsNullOrEmpty(BotName))
-            {
-                Program.WriteLine(ConsoleColor.Red, "BOT NAME NOT SET. Please use the command: settings->change->BotName and set the value to your Bot Channel");
-                return;
-            }
-            if (String.IsNullOrEmpty(OAuth))
-            {
-                Program.WriteLine(ConsoleColor.Red, "OATH TOKEN NOT SET. Please add a User Environment Variable called \"TWITCH_BOT_OAUTH\" ");
-                return;
-            }
 
             // Set up the connection to Twitch
             var tcpClient = new TcpClient();
@@ -92,17 +75,16 @@ namespace StatTracker
             SendMessage("Stat Tracker Connected");
 
             // All the different 
-            Functions = new Dictionary<string, Tuple<List<string>, string, Action<TwitchCommand>>>()
+            Functions = new Dictionary<string, Tuple<string, Action<TwitchCommand>>>()
             {
-                {"total", Tuple.Create(new List<string>(){"total"},"Get the total deaths", OutputTotal) },
-                {"game", Tuple.Create(new List<string>(){"game", "playthrough"},"Get the deaths for the current or specified game [arg1].", OutputPlaythrough) },
-                {"boss", Tuple.Create(new List<string>(){"boss"},"Get the deaths for the current boss, specific boss [arg1] of the current game, or specific boss [arg1] of a specified game [arg2].", OutputBoss) },
-                {"list", Tuple.Create(new List<string>(){"list"},"Get a list of all playthroughs, all bosses of the current game [arg1], or all bosses of a specific game [arg2].", OutputList) },
-                {"sessions", Tuple.Create(new List<string>(){"sessions"},"Get how many sessions have happened for a playthrough.", OutputSessions) },
-                {"status", Tuple.Create(new List<string>(){"status"},"Get the status of a specific game [arg1] and optionally a specific boss for the game [arg2].", WIP) },
-                {"help", Tuple.Create(new List<string>(){ "help, commands"},"List all commands or the details of a specific command [arg1].", WIP) },
-                {"vod", Tuple.Create(new List<string>(){"vod"},"Get the Youtube VOD link for the current or specified game [arg1].", WIP) },
-                {"time", Tuple.Create(new List<string>(){"time, playtime"},"Get the playtime of the current or specified game [arg1]", WIP) }
+                {"total", Tuple.Create("Get the total deaths", OutputTotal) },
+                {"game", Tuple.Create("Get the deaths for the current or specified game [arg1].", OutputPlaythrough) },
+                {"boss", Tuple.Create("Get the deaths for the current boss, specific boss [arg1] of the current game, or specific boss [arg1] of a specified game [arg2].", OutputBoss) },
+                {"list", Tuple.Create("Get a list of all playthroughs, all bosses of the current game [arg1], or all bosses of a specific game [arg2].", OutputList) },
+                {"sessions", Tuple.Create("Get how many sessions have happened for a playthrough.", OutputSessions) },
+                {"help", Tuple.Create("List all commands or the details of a specific command [arg1].", OutputHelp) },
+                {"vod", Tuple.Create("Get the Youtube VOD link for the current or specified game [arg1].", OutputVOD) },
+                {"time", Tuple.Create("Get the playtime of the current or specified game [arg1]", OutputTime) }
             };
 
             while (true)
@@ -153,17 +135,13 @@ namespace StatTracker
         private bool ExecuteFunction(TwitchCommand Command)
         {
             // Search the dictionary for a matching command
-            foreach (KeyValuePair<string, Tuple<List<string>, string, Action<TwitchCommand>>> entry in Functions)
+            foreach (KeyValuePair<string, Tuple<string, Action<TwitchCommand>>> entry in Functions)
             {
-                // A single command can have multiple accepted strings
-                foreach (string parsed in entry.Value.Item1)
+                if (Command.Category == entry.Key)
                 {
-                    if (Command.Category == parsed)
-                    {
-                        // Call the function associated with the command
-                        entry.Value.Item3(Command);
-                        return true;
-                    }
+                    // Call the function associated with the command
+                    entry.Value.Item2(Command);
+                    return true;
                 }
             }
 
@@ -238,22 +216,20 @@ namespace StatTracker
             var playthrough = TryFindPlaythrough(gameToLookup);
             if (playthrough == null)
             {
-                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Perhaps try the '!deaths list' command");
+                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Try the '!deaths list' command");
                 return;
             }
 
             // Output the info
-            int gameDeaths = playthrough.Deaths;
-            string gameName = playthrough.Game;
-            string timeFormat = gameDeaths == 1 ? "time" : "times";
+            string timeFormat = (playthrough.Deaths == 1) ? "time" : "times";
 
             if (playthrough.Status == "Complete")
             {
-                SendMessage($"{ChannelName} died a total of {gameDeaths} {timeFormat} in his playthrough of {gameName}.");
+                SendMessage($"{ChannelName} died a total of {playthrough.Deaths} {timeFormat} in {playthrough.Game}.");
             }
             else
             {
-                SendMessage($"{ChannelName} has died a total of {gameDeaths} {timeFormat} so far in his playthrough of {gameName}.");
+                SendMessage($"{ChannelName} has died a total of {playthrough.Deaths} {timeFormat} so far in {playthrough.Game}.");
             }
         }
         private void OutputBoss(TwitchCommand Command)
@@ -263,7 +239,7 @@ namespace StatTracker
             var playthrough = TryFindPlaythrough(gameToLookup);
             if (playthrough == null)
             {
-                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Perhaps try the '!deaths list' command");
+                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Try the '!deaths list' command");
                 return;
             }
 
@@ -276,7 +252,7 @@ namespace StatTracker
                 // If an arg was specified then that boss couldn't be found otherwise there is no current boss
                 if(Command.MainArg != String.Empty)
                 {
-                    SendMessage($"Sorry {Command.User} but I can't find {bossToLookup} for {gameToLookup}. Perhaps try the '!deaths list' command");
+                    SendMessage($"Sorry {Command.User} but I can't find {bossToLookup} for {gameToLookup}. Try the '!deaths list' command");
                 }
                 else
                 {
@@ -287,17 +263,14 @@ namespace StatTracker
             }
 
             // Output the info
-            int bossDeaths = boss.Deaths;
-            string bossName = boss.Name;
-            string gameName = playthrough.Game;
-            string timeFormat = bossDeaths == 1 ? "time" : "times";
+            string timeFormat = (boss.Deaths == 1) ? "time" : "times";
             if (boss.Status == "Defeated")
             {
-                SendMessage($"{ChannelName} died a total of {bossDeaths} {timeFormat} before killing {bossName} in {gameName}.");
+                SendMessage($"{ChannelName} died a total of {boss.Deaths} {timeFormat} before killing {boss.Name} in {playthrough.Game}.");
             }
             else
             {
-                SendMessage($"{ChannelName} has so far died a total of {bossDeaths} {timeFormat} trying to kill {bossName} in {gameName}.");
+                SendMessage($"{ChannelName} has so far died a total of {boss.Deaths} {timeFormat} trying to kill {boss.Name} in {playthrough.Game}.");
             }
         }
         private void OutputList(TwitchCommand Command)
@@ -316,7 +289,9 @@ namespace StatTracker
                     string playthroughLookup = String.Format("{0}, ", playthrough.Lookup);
                     if ((messageList[listIndex] + playthroughLookup).Length >= 500)
                     {
-                        messageList.Add("Playthroughs cont.: " + playthroughLookup);
+                        // Removes the last ", "
+                        messageList[listIndex] = messageList[listIndex].Remove(messageList[listIndex].Count() - 2);
+                        messageList.Add("Playthroughs cont: " + playthroughLookup);
                         listIndex++;
                     }
                     else
@@ -324,9 +299,11 @@ namespace StatTracker
                         messageList[listIndex] += playthroughLookup;
                     }
                 }
+                // Removes the last ", "
+                messageList[listIndex] = messageList[listIndex].Remove(messageList[listIndex].Count() - 2);
 
                 // Send all the messages
-                foreach(string message in messageList)
+                foreach (string message in messageList)
                 {
                     SendMessage($"{message}");
                 }
@@ -336,7 +313,7 @@ namespace StatTracker
                 var playthrough = TryFindPlaythrough(Command.MainArg);
                 if (playthrough == null)
                 {
-                    SendMessage($"Sorry {Command.User} but I can't find {Command.MainArg}. Perhaps try the '!deaths list' command without any args");
+                    SendMessage($"Sorry {Command.User} but I can't find {Command.MainArg}. Try the '!deaths list' command without any args");
                 }
                 else
                 {
@@ -351,7 +328,9 @@ namespace StatTracker
                         string bossLookup = String.Format("{0}, ", boss.Lookup);
                         if ((messageList[listIndex] + bossLookup).Length >= 500)
                         {
-                            messageList.Add("Bosses cont.: " + bossLookup);
+                            // Removes the last ", "
+                            messageList[listIndex] = messageList[listIndex].Remove(messageList[listIndex].Count() - 2);
+                            messageList.Add("Bosses cont: " + bossLookup);
                             listIndex++;
                         }
                         else
@@ -359,6 +338,8 @@ namespace StatTracker
                             messageList[listIndex] += bossLookup;
                         }
                     }
+                    // Removes the last ", "
+                    messageList[listIndex] = messageList[listIndex].Remove(messageList[listIndex].Count() - 2);
 
                     // Send all the messages
                     foreach (string message in messageList)
@@ -376,21 +357,101 @@ namespace StatTracker
             var playthrough = TryFindPlaythrough(gameToLookup);
             if (playthrough == null)
             {
-                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Perhaps try the '!deaths list' command");
+                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Try the '!deaths list' command");
                 return;
             }
 
-            int sessionCount = playthrough.Sessions;
-            string gameName = playthrough.Game;
-            string sessionFormat = sessionCount == 1 ? "session" : "sessions";
-            if(sessionCount == 0)
+            string sessionFormat = playthrough.Sessions == 1 ? "session" : "sessions";
+            if(playthrough.Sessions == 0)
             {
-                SendMessage($"{ChannelName} has not logged any sessions for {gameName}.");
+                SendMessage($"{ChannelName} has not logged any sessions for {playthrough.Game}.");
             }
             else
             {
-                SendMessage($"{ChannelName} has logged {sessionCount} {sessionFormat} for {gameName}.");
+                SendMessage($"{ChannelName} has logged {playthrough.Sessions} {sessionFormat} for {playthrough.Game}.");
             }
         }
+        private void OutputHelp(TwitchCommand Command)
+        {
+            if(Command.MainArg == String.Empty)
+            {
+                string message = String.Empty;
+                message += "Help Commands: ";
+
+                foreach (KeyValuePair<string, Tuple<string, Action<TwitchCommand>>> entry in Functions)
+                {
+                    message += $"{entry.Key}, ";
+                }
+
+                // Removes the last ", "
+                message = message.Remove(message.Count() - 2);
+                SendMessage($"{message}");
+            }
+            else
+            {
+                if(Functions.ContainsKey(Command.MainArg))
+                {
+                    SendMessage($"Command '{Command.MainArg}' - {Functions[Command.MainArg].Item1}");
+                }
+                else
+                {
+                    SendMessage($"Sorry {Command.User} but I don't recognise that help command. Try'!deaths help' to get the list");
+                }
+            }
+        }
+        private void OutputVOD(TwitchCommand Command)
+        {
+            string gameToLookup = Command.MainArg;
+            var playthrough = TryFindPlaythrough(gameToLookup);
+            if (playthrough == null)
+            {
+                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Try the '!deaths list' command");
+                return;
+            }
+
+            if (String.IsNullOrEmpty(playthrough.VOD))
+            {
+                SendMessage($"{ChannelName} has not set a VOD link for {playthrough.Game}.");
+            }
+            else
+            {
+                SendMessage($"{playthrough.Game} VOD: {playthrough.VOD}");
+            }
+        }
+
+        private void OutputTime(TwitchCommand Command)
+        {
+            string gameToLookup = Command.MainArg;
+            var playthrough = TryFindPlaythrough(gameToLookup);
+            if (playthrough == null)
+            {
+                SendMessage($"Sorry {Command.User} but I can't find {gameToLookup}. Try the '!deaths list' command");
+                return;
+            }
+
+            if (String.IsNullOrEmpty(playthrough.Playtime))
+            {
+                SendMessage($"{ChannelName} has not set a playtime {playthrough.Game}.");
+            }
+            else
+            {
+                // Output the info
+                string[] split = playthrough.Playtime.Split(" ");
+                int hours = Int32.Parse(split[0].Split("h")[0]);
+                string hourFormat = (hours == 1) ? "hour" : "hours";
+                int minutes = Int32.Parse(split[1].Split("m")[0]);
+                string minuteformat = (hours == 1) ? "minute" : "minutes";
+
+                if (playthrough.Status == "Complete")
+                {
+                    SendMessage($"{ChannelName} took {hours} {hourFormat} and {minutes} {minuteformat} to finish {playthrough.Game}.");
+                }
+                else
+                {
+                    SendMessage($"{ChannelName} has spent {hours} {hourFormat} and {minutes} {minuteformat} so far on {playthrough.Game}.");
+                }
+            }
+        }
+
     }
 }

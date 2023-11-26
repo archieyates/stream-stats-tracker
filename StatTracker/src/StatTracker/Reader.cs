@@ -77,6 +77,7 @@ namespace StatTracker
                 {"sessions", Tuple.Create(new List<string>(){ "sessions", "session"},"Update the session count for current playthrough", IncrementSessionCount) },
                 {"setsession", Tuple.Create(new List<string>(){ "setsession"},"Set the session count for current playthrough", SetSessionCount) },
                 {"seturl", Tuple.Create(new List<string>(){ "url","vod"},"Set the vod link for this playthrough", SetVODLink) },
+                {"settime", Tuple.Create(new List<string>(){ "time","playtime"},"Set the current time for this playthrough", SetPlaytime) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified playthrough", DeleteGame) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
             };
@@ -273,7 +274,7 @@ namespace StatTracker
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (Playthrough playthrough in Program.StatsManager.Playthroughs)
             {
-                Console.WriteLine("{0} | {1} | {2} | {3}", playthrough.Lookup, playthrough.Game, playthrough.Status, playthrough.Deaths);
+                Console.WriteLine($"{playthrough.Lookup} | {playthrough.Game} | {playthrough.Status} | {playthrough.Deaths} | {playthrough.Playtime}");
             }
         }
         private void SetCurrentGame()
@@ -311,6 +312,17 @@ namespace StatTracker
 
             // Manager handles the actual data
             Program.StatsManager.SetVODLink(link);
+        }
+        private void SetPlaytime()
+        {
+            // Get the times
+            Program.Write(ConsoleColor.Blue, "Enter Hours: ");
+            int hours = Int32.Parse(Console.ReadLine());
+
+            Program.Write(ConsoleColor.Blue, "Enter Minutes: ");
+            int minutes = Int32.Parse(Console.ReadLine());
+
+            Program.StatsManager.SetPlaytime(hours, minutes);
         }
         private void DeleteGame()
         {
@@ -359,7 +371,7 @@ namespace StatTracker
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (Boss boss in Program.StatsManager.GetCurrentPlaythrough().Bosses)
             {
-                Console.WriteLine("{0} | {1} | {2} | {3}", boss.Lookup, boss.Name, boss.Status, boss.Deaths);
+                Console.WriteLine($"{boss.Lookup} | {boss.Name} | {boss.Status} | {boss.Deaths}");
             }
         }
         private void SetCurrentBoss()
@@ -476,8 +488,36 @@ namespace StatTracker
         }
         private void TwitchConnect()
         {
-            // TODO: Check channel settings
+            String ChannelName = Program.Settings.ChannelName;
+            String BotName = Program.Settings.BotName;
+            String OAuth = Environment.GetEnvironmentVariable("TWITCH_BOT_OAUTH", EnvironmentVariableTarget.User);
+
+            if (String.IsNullOrEmpty(OAuth))
+            {
+                Program.WriteLine(ConsoleColor.Red, "OATH TOKEN NOT SET. Please add a User Environment Variable called \"TWITCH_BOT_OAUTH\" ");
+                return;
+            }
+
+            if (String.IsNullOrEmpty(ChannelName))
+            {
+                Program.Write(ConsoleColor.Blue, "Enter your Channel Name: ");
+                ChannelName = Console.ReadLine();
+                Program.Settings.ChannelName = ChannelName;
+                Program.WriteLine(ConsoleColor.Green, "Channel Name {0} written to Settings.", ChannelName);
+                Program.SaveSettings();
+            }
+
+            if (String.IsNullOrEmpty(BotName))
+            {
+                Program.Write(ConsoleColor.Blue, "Enter your Bot's Name: ");
+                BotName = Console.ReadLine();
+                Program.Settings.BotName = BotName;
+                Program.WriteLine(ConsoleColor.Green, "Bot Name {0} written to Settings.", BotName);
+                Program.SaveSettings();
+            }
+
             TwitchBot.InitTwitchListener();
+            Thread.Sleep(1000);
         }
         private void TwitchBan()
         {
