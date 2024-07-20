@@ -7,7 +7,6 @@
         public int Deaths { get; set; }
         public int Sessions { get; set; }
         public string Status { get; set; }
-        public string VOD { get; set; }
         public string Playtime { get; set; }
         public List<Boss> Bosses { get; set; }
 

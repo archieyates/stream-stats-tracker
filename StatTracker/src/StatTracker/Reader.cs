@@ -76,7 +76,6 @@ namespace StatTracker
                 {"completegame", Tuple.Create(new List<string>(){"complete"},"Complete the current playthrough", CompleteGame) },
                 {"sessions", Tuple.Create(new List<string>(){ "sessions", "session"},"Update the session count for current playthrough", IncrementSessionCount) },
                 {"setsession", Tuple.Create(new List<string>(){ "setsession"},"Set the session count for current playthrough", SetSessionCount) },
-                {"seturl", Tuple.Create(new List<string>(){ "url","vod"},"Set the vod link for this playthrough", SetVODLink) },
                 {"settime", Tuple.Create(new List<string>(){ "time","playtime"},"Set the current time for this playthrough", SetPlaytime) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified playthrough", DeleteGame) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
@@ -303,15 +302,6 @@ namespace StatTracker
 
             // Manager handles actual data
             Program.StatsManager.SetCurrentPlaythroughSessions(Int32.Parse(count));
-        }
-        private void SetVODLink()
-        {
-            // The url of the vod
-            Program.Write(ConsoleColor.Blue, "Enter VOD Link: ");
-            string link = Console.ReadLine().ToLower();
-
-            // Manager handles the actual data
-            Program.StatsManager.SetVODLink(link);
         }
         private void SetPlaytime()
         {

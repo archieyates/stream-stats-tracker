@@ -136,7 +136,7 @@ namespace StatTracker
                 Program.WriteLine(ConsoleColor.Yellow, "Data converted. It is now safe to delete Playthroughs.json and the Bosses folder");
                 Program.Write(ConsoleColor.White, "Would you like to do this now? (y/n): ");
                 string answer = Console.ReadLine().ToLower();
-                if(answer == "y")
+                if (answer == "y")
                 {
                     File.Delete(playthroughFile);
                     Program.WriteLine(ConsoleColor.Yellow, "Deleted Playthroughs.json");
@@ -157,7 +157,7 @@ namespace StatTracker
 
             // Save out the list data
             SaveList();
-         }
+        }
         private void SaveCurrentPlaythrough()
         {
             // Find and save the current playthrough
@@ -329,7 +329,7 @@ namespace StatTracker
         public Boss GetCurrentBoss()
         {
             Playthrough currentPlaythrough = GetCurrentPlaythrough();
-            if(currentPlaythrough != null)
+            if (currentPlaythrough != null)
             {
                 return currentPlaythrough.Bosses.Find(b => b.Lookup == CurrentBossLookup);
             }
@@ -571,18 +571,18 @@ namespace StatTracker
             }
 
             // Get the index of the current boss
-            int currentIndex  = (CurrentBossLookup != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBossLookup)) : 0;
-            if(currentIndex == -1)
+            int currentIndex = (CurrentBossLookup != String.Empty) ? GetCurrentPlaythrough().Bosses.FindIndex(0, (b => b.Lookup == CurrentBossLookup)) : 0;
+            if (currentIndex == -1)
             {
                 currentIndex = 0;
             }
 
             // Try and find the next boss once we know the current one
-            for(int index = (currentIndex + 1); index < GetCurrentPlaythrough().Bosses.Count; ++index)
+            for (int index = (currentIndex + 1); index < GetCurrentPlaythrough().Bosses.Count; ++index)
             {
                 Boss boss = GetCurrentPlaythrough().Bosses[index];
 
-                if(boss.Status == "Undefeated")
+                if (boss.Status == "Undefeated")
                 {
                     SetCurrentBoss(boss.Lookup);
                     return;
@@ -633,7 +633,7 @@ namespace StatTracker
             }
 
             // Loop back around since we only started checking from the current index
-            for (int index = (GetCurrentPlaythrough().Bosses.Count -1); index > currentIndex; ++index)
+            for (int index = (GetCurrentPlaythrough().Bosses.Count - 1); index > currentIndex; ++index)
             {
                 Boss boss = GetCurrentPlaythrough().Bosses[index];
 
@@ -661,7 +661,7 @@ namespace StatTracker
             Program.WriteLine(ConsoleColor.Green, "Deaths for {0} updated to {1}", CurrentPlaythroughLookup, CurrentGameDeaths);
 
             if (IncludeBoss)
-            { 
+            {
                 //If there's a current boss then also update its count
                 Boss currentBoss = GetCurrentPlaythrough().Bosses.Find(b => b.Lookup == CurrentBossLookup);
                 if (currentBoss != null)
@@ -780,22 +780,6 @@ namespace StatTracker
             return lookup;
         }
 
-        public void SetVODLink(string Link)
-        {
-            // If there isn't a current playthrough then we can't update the deaths for it
-            if (!CheckCurrentPlaythrough())
-            {
-                return;
-            }
-
-            GetCurrentPlaythrough().VOD = Link;
-
-            // Save data
-            SaveCurrentPlaythrough();
-
-            Program.WriteLine(ConsoleColor.Green, "{0} VOD link set to {1}", CurrentPlaythroughLookup, GetCurrentPlaythrough().VOD);
-        }
-
         public void SetPlaytime(int Hours, int Minutes)
         {
             // If there isn't a current playthrough then we can't update the deaths for it
@@ -806,7 +790,7 @@ namespace StatTracker
 
             // Just in case
             int hours = Hours + (Minutes / 60);
-            int minutes = Minutes%= 60;
+            int minutes = Minutes %= 60;
 
             GetCurrentPlaythrough().Playtime = $"{hours}h {minutes}m";
 
