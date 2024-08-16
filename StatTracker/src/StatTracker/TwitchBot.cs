@@ -295,7 +295,7 @@ namespace StatTracker
             }
             else
             {
-                SendMessage($"{Username} please enter a search term for  game or boss e.g. \"dark souls\" or \"demon of hatred\"");
+                SendMessage($"{Username} Total Deaths: {Program.StatsManager.TotalDeaths}. Enter a search term for specific game or boss e.g. \"dark souls\" or \"demon of hatred\"");
             }
         }
 
