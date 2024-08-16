@@ -76,6 +76,14 @@ namespace StatTracker
             {
                 var webRequest = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/archieyates/stream-stats-tracker/main/StatTracker/src/StatTracker/StatTracker.csproj");
                 var response = webClient.Send(webRequest);
+
+                if(response.IsSuccessStatusCode == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Encountered Error trying to check for version update. Github may be experiencing problems");
+                    return;
+                }
+
                 using var webReader = new StreamReader(response.Content.ReadAsStream());
                 projData = webReader.ReadToEnd();
             }
