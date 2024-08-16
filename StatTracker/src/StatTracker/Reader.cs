@@ -90,6 +90,7 @@ namespace StatTracker
                 {"unset", Tuple.Create(new List<string>(){"unset"},"Unset the current boss", UnsetCurrentBoss) },
                 {"defeat", Tuple.Create(new List<string>(){"defeat"},"Mark current boss as defeated", DefeatBoss) },
                 {"delete", Tuple.Create(new List<string>(){ "delete"},"Delete a specified boss", DeleteBoss) },
+                {"rename", Tuple.Create(new List<string>(){ "rename"},"Rename a specified boss", RenameBoss) },
                 {"next", Tuple.Create(new List<string>(){ "next"},"Set the next undefeated boss as current", NextBoss) },
                 {"previous", Tuple.Create(new List<string>(){ "prev"},"Set the previous undefeated boss as current", PreviousBoss) },
                 {"esc", Tuple.Create(new List<string>(){ "esc"},"Return back to main", Return) }
@@ -391,6 +392,30 @@ namespace StatTracker
 
             // Manager handles the actual data
             Program.StatsManager.DeleteBoss(lookup);
+        }
+        private void RenameBoss()
+        {
+            // Lookup is used as the unique identifier for each boss
+            Program.Write(ConsoleColor.Blue, "Enter Lookup: ");
+            string lookup = Console.ReadLine().ToLower();
+
+            if(lookup == "esc")
+            {
+                return;
+            }
+
+            Boss boss = Program.StatsManager.GetBoss(lookup);
+            if(boss == null)
+            {
+                Program.WriteLine(ConsoleColor.Red, "{0} lookup doesn't exist", lookup);
+                RenameBoss();
+                return;
+            }
+
+            Program.Write(ConsoleColor.Blue, "Enter New Boss Name: ");
+            string bossName = Console.ReadLine();
+            Program.StatsManager.RenameBoss(lookup, bossName);
+
         }
         private void NextBoss()
         {

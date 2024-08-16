@@ -335,6 +335,15 @@ namespace StatTracker
             }
             return null;
         }
+        public Boss GetBoss(String Lookup)
+        {
+            Playthrough currentPlaythrough = GetCurrentPlaythrough();
+            if (currentPlaythrough != null)
+            {
+                return currentPlaythrough.Bosses.Find(b => b.Lookup == Lookup);
+            }
+            return null;
+        }
         public void CompleteCurrentPlaythrough()
         {
             // If there isn't a current playthrough then it can't be updated
@@ -561,6 +570,32 @@ namespace StatTracker
             {
                 Program.WriteLine(ConsoleColor.Red, "{0} does not exist", Lookup);
             }
+        }
+        public void RenameBoss(string Lookup, string bossName)
+        {
+            // If there isn't a current playthrough then there won't be boss data
+            if (!CheckCurrentPlaythrough())
+            {
+                return;
+            }
+
+            Playthrough currentPlaythrough = GetCurrentPlaythrough();
+            Boss boss = currentPlaythrough.Bosses.Find(b => b.Lookup == Lookup);
+            if (boss != null)
+            {
+                Program.WriteLine(ConsoleColor.Green, "Renamed {0} to {1}", boss.Name, bossName);
+                boss.Name = bossName;
+            }
+            else
+            {
+                Program.WriteLine(ConsoleColor.Red, "Could not find boss {0}", Lookup);
+            }
+
+
+            // Save data and update death counts
+            SaveCurrentPlaythrough();
+            SaveDeaths();
+
         }
         public void NextBoss()
         {
