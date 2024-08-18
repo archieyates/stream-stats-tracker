@@ -32,7 +32,6 @@ Each playthrough contains the following properties
 - _Deaths_: How many deaths have happened in this playthrough
 - _Sessions_: How many sessions have been spent on this game
 - _Status_: Is this playthrough currently in-progress, current, complete etc.
-- _VOD_: Link to the Youtube playlist of the VODs
 - _Playtime_: How long the playthrough took
 - _Bosses_: List of boss entries for this playthrough with each boss having the following formats:
 	- _Lookup_: The lookup name for the boss used to identify it (this needs to be unique)
@@ -119,6 +118,7 @@ The full list of commands are:
 - _[unset]_: Unset the current boss
 - _[defeat]_: Mark current boss as defeated
 - _[delete]_: Delete a specified boss
+- _[rename]_: Rename a specified boss
 - _[next]_: Set the next undefeated boss as current
 - _[prev]_: Set the previous undefeated boss as current
 - _[esc]_: Return back to main
@@ -126,10 +126,10 @@ The full list of commands are:
 ## Death
 The Death layer updates the death counts for the current playthrough and boss.
 If there is no current playthrough then these commands will not run.
-- _[add, ++]_: Increment the death count
-- _[subtract, --]_: Decrement the death count
-- _[bradd, ++br]_: Increment the death count without counting the boss
-- _[brsubtract, --br]_: Decrement the death count without counting the boss
+- _[++]_: Increment the death count
+- _[--]_: Decrement the death count
+- _[++br]_: Increment the death count without counting the boss
+- _[--br]_: Decrement the death count without counting the boss
 - _[esc]_: Return back to main
 
 ## Settings
