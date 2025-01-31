@@ -20,12 +20,6 @@ namespace StatTracker
     {
       Console.ForegroundColor = ConsoleColor.Green;
       LoadPlaythroughs();
-
-      // If there aren't any playthroughs check if there is legacy data to import
-      if (Playthroughs.Count == 0)
-      {
-        ConvertLegacyData();
-      }
     }
     private void LoadPlaythroughs()
     {
@@ -73,77 +67,6 @@ namespace StatTracker
 
       // Update the death files
       SaveDeaths();
-    }
-    public void ConvertLegacyData()
-    {
-      Playthroughs.Clear();
-
-      // Look for the old playthroughs file
-      string playthroughFile = "Stats\\Playthroughs.json";
-      if (File.Exists(playthroughFile))
-      {
-        Program.WriteLine(ConsoleColor.Yellow, "Converting Playthroughs.JSON");
-
-        // Go through all the legacy playthroughs
-        string jsonString = System.IO.File.ReadAllText(playthroughFile);
-        LegacyPlaythroughContainer playthroughs = JsonSerializer.Deserialize<LegacyPlaythroughContainer>(jsonString);
-        foreach (Playthrough playthrough in playthroughs.Playthroughs)
-        {
-          // Add to the playthroughs
-          Program.WriteLine(ConsoleColor.Green, "Converting {0}", playthrough.Lookup);
-          Playthroughs.Add(playthrough);
-
-          // See if there is boss data associated with the playthrough
-          string bossesFile = String.Format("Stats\\Bosses\\{0}.json", playthrough.Lookup);
-          if (File.Exists(bossesFile))
-          {
-            // Get all the legacy bosses
-            jsonString = System.IO.File.ReadAllText(bossesFile);
-            LegacyBossContainer bosses = JsonSerializer.Deserialize<LegacyBossContainer>(jsonString);
-            if (bosses.Bosses != null)
-            {
-              // Go through all the legacy bosses
-              foreach (Boss boss in bosses.Bosses)
-              {
-                Program.WriteLine(ConsoleColor.Blue, "\tConverting {0}", boss.Lookup);
-                // Add the boss to the playthrough
-                Playthroughs.Find(p => p.Lookup == playthrough.Lookup).Bosses.Add(boss);
-              }
-            }
-          }
-
-          // Set current playthrough
-          if (playthrough.Status == "Current")
-          {
-            CurrentPlaythroughLookup = playthrough.Lookup;
-            CurrentGameDeaths = playthrough.Deaths;
-          }
-
-          // Set current boss
-          Boss currentBoss = playthrough.Bosses.Find(b => b.Status == "Current");
-          if (currentBoss != null)
-          {
-            CurrentBossLookup = currentBoss.Lookup;
-            CurrentBossDeaths = currentBoss.Deaths;
-          }
-        }
-
-        // Save all the playthrough file
-        SavePlaythroughs();
-        SaveDeaths();
-
-        // Delete all the old data (if the user wants to)
-        Program.WriteLine(ConsoleColor.Yellow, "Data converted. It is now safe to delete Playthroughs.json and the Bosses folder");
-        Program.Write(ConsoleColor.White, "Would you like to do this now? (y/n): ");
-        string answer = Console.ReadLine().ToLower();
-        if (answer == "y")
-        {
-          File.Delete(playthroughFile);
-          Program.WriteLine(ConsoleColor.Yellow, "Deleted Playthroughs.json");
-          Directory.Delete("Stats\\Bosses", true);
-          Program.WriteLine(ConsoleColor.Yellow, "Deleted Bosses folder");
-        }
-      }
     }
     private void SavePlaythroughs()
     {

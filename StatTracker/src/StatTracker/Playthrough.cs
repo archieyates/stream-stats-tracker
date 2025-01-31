@@ -17,8 +17,4 @@
       Bosses = new List<Boss>();
     }
   }
-  public class LegacyPlaythroughContainer
-  {
-    public List<Playthrough> Playthroughs { get; set; } = new List<Playthrough>();
-  }
 }
